@@ -1,0 +1,35 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "Node16",
+    "moduleResolution": "Node16",
+
+    "strict": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+
+    "noEmit": true,
+
+    "types": [
+      "@playwright/test",
+      "node"
+    ]
+  },
+
+  "include": [
+    "tests/**/*.ts",
+    "pages/**/*.ts",
+    "actions/**/*.ts",
+    "components/**/*.ts",
+    "locators/**/*.ts",
+    "fixtures/**/*.ts",
+    "utils/**/*.ts",
+    "config/**/*.ts",
+    "testData/**/*.ts",
+    "scripts/**/*.ts",
+    "playwright.config.ts"
+  ]
+}
