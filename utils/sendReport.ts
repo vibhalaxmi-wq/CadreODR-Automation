@@ -25,10 +25,11 @@ const TOKEN_PATH = path.resolve(
 // ==========================================================
 
 const RECIPIENT1 =
-    'vibha.laxmi@thecadre.in';
+    'basanagouda.p@thecadre.in';
+
 
 const SENDER =
-    'vibha.laxmi+odradmin@thecadre.in';
+    'vibha.laxmi@thecadre.in';
 
 
 // ==========================================================
