@@ -1,38 +1,23 @@
 import { test } from '@playwright/test';
-
 import { validLogin } from '../../scenarios/Login/validLogin';
-
 import { bulkActionsScenario } from '../../scenarios/BulkActions/validateActionButtonIsEnabled';
-
 import { assignCaseOfficerScenario } from '../../scenarios/BulkActions/assignCaseOfficer';
-
 import { sendReport } from '../../utils/sendReport';
-
 // ==========================================================
 // TEST TIMEOUT
 // ==========================================================
-
 test.setTimeout(120000);
-
 // ==========================================================
 // ADMIN LOGIN
 // ==========================================================
-
-const adminEmail =
-  'vibha.laxmi+odradmin@thecadre.in';
-
+const adminEmail ='vibha.laxmi+odradmin@thecadre.in';
 // ==========================================================
 // SCENARIO COUNTERS
 // ==========================================================
-
 let totalScenarios = 0;
-
 let passedScenarios = 0;
-
 let failedScenarios = 0;
-
 let skippedScenarios = 0;
-
 // ==========================================================
 // RUN SCENARIO
 // ==========================================================

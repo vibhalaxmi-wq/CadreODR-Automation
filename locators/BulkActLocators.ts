@@ -31,9 +31,9 @@ export class BulkActLocators {
     });
   }
 
-  auto001Option() {
+  e2eOption() {
     return this.page.getByRole('option', {
-      name: 'AUTO001',
+      name: 'E2E',
     });
   }
 
@@ -150,9 +150,9 @@ export class BulkActLocators {
   // CLAIMS
   // ==========================================================
 
-  auto007Claim() {
+  e2e01Claim() {
     return this.page.getByText(
-      'Claim #AUTO007',
+      'Claim #E2E01',
       {
         exact: true,
       }

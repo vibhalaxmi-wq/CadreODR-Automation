@@ -77,7 +77,7 @@ test.describe(
     () => {
 
         // ==================================================
-        // RUN TESTS SEQUENTIALLY
+        // SEQUENTIAL EXECUTION
         // ==================================================
 
         test.describe.configure({
@@ -95,12 +95,37 @@ test.describe(
 
 
         // ==================================================
-        // 01 - CREATE CLAIMS
+        // 01 - CREATE BOTH CLAIMS
         // ==================================================
 
         test(
             '01 - Create Arbitration And Conciliation Claims',
             async ({ page }) => {
+
+                console.log('');
+
+                console.log(
+                    '======================================================'
+                );
+
+                console.log(
+                    '01 - CREATE ARBITRATION + CONCILIATION'
+                );
+
+                console.log(
+                    '======================================================'
+                );
+
+
+                // ==================================================
+                // THIS SINGLE SCENARIO MUST:
+                //
+                // LOGIN
+                // CREATE ARBITRATION
+                // CREATE CONCILIATION
+                // LOGOUT
+                // RETURN DATA
+                // ==================================================
 
                 const result =
                     await createArbitrationAndConciliationClaims(
@@ -109,35 +134,107 @@ test.describe(
 
 
                 // ==================================================
-                // SAVE CLAIM DISPLAY NAMES
+                // SAVE ARBITRATION CLAIM
                 // ==================================================
 
                 arbitrationDisplayName =
                     result.arbitrationDisplayName;
+
+
+                // ==================================================
+                // SAVE CONCILIATION CLAIM
+                // ==================================================
 
                 conciliationDisplayName =
                     result.conciliationDisplayName;
 
 
                 // ==================================================
-                // SAVE USER EMAILS
+                // SAVE CLAIMANT
                 // ==================================================
 
                 claimantEmail =
                     result.claimantEmail;
 
+
+                // ==================================================
+                // SAVE RESPONDENT
+                // ==================================================
+
                 respondentEmail =
                     result.respondentEmail;
 
+
+                // ==================================================
+                // SAVE ARBITRATOR
+                // ==================================================
+
                 arbitratorEmail =
                     result.arbitratorEmail;
+
+
+                // ==================================================
+                // SAVE CONCILIATOR
+                // ==================================================
 
                 conciliatorEmail =
                     result.mediatorEmail;
 
 
                 // ==================================================
-                // LOG SAVED DATA
+                // VALIDATE DATA
+                // ==================================================
+
+                if (!arbitrationDisplayName) {
+
+                    throw new Error(
+                        'Arbitration claim display name was not returned.'
+                    );
+                }
+
+
+                if (!conciliationDisplayName) {
+
+                    throw new Error(
+                        'Conciliation claim display name was not returned.'
+                    );
+                }
+
+
+                if (!claimantEmail) {
+
+                    throw new Error(
+                        'Claimant email was not returned.'
+                    );
+                }
+
+
+                if (!respondentEmail) {
+
+                    throw new Error(
+                        'Respondent email was not returned.'
+                    );
+                }
+
+
+                if (!arbitratorEmail) {
+
+                    throw new Error(
+                        'Arbitrator email was not returned.'
+                    );
+                }
+
+
+                if (!conciliatorEmail) {
+
+                    throw new Error(
+                        'Conciliator email was not returned.'
+                    );
+                }
+
+
+                // ==================================================
+                // PRINT DATA
                 // ==================================================
 
                 console.log('');
@@ -147,7 +244,7 @@ test.describe(
                 );
 
                 console.log(
-                    'CREATED CLAIM DATA SAVED'
+                    'CLAIM DATA SAVED FOR DECLARATIONS'
                 );
 
                 console.log(
@@ -186,12 +283,23 @@ test.describe(
 
 
         // ==================================================
-        // 02 - ARBITRATOR
+        // 02 - ARBITRATOR DECLARATION
         // ==================================================
 
         test(
             '02 - Arbitrator Declaration',
             async ({ page }) => {
+
+                if (
+                    !arbitratorEmail ||
+                    !arbitrationDisplayName
+                ) {
+
+                    throw new Error(
+                        'Arbitrator declaration data is missing.'
+                    );
+                }
+
 
                 await arbitratorDeclaration(
                     page,
@@ -203,12 +311,23 @@ test.describe(
 
 
         // ==================================================
-        // 03 - CONCILIATOR
+        // 03 - CONCILIATOR DECLARATION
         // ==================================================
 
         test(
             '03 - Conciliator Declaration',
             async ({ page }) => {
+
+                if (
+                    !conciliatorEmail ||
+                    !conciliationDisplayName
+                ) {
+
+                    throw new Error(
+                        'Conciliator declaration data is missing.'
+                    );
+                }
+
 
                 await conciliatorDeclaration(
                     page,
@@ -220,12 +339,23 @@ test.describe(
 
 
         // ==================================================
-        // 04 - CLAIMANT
+        // 04 - CLAIMANT DECLARATION
         // ==================================================
 
         test(
             '04 - Claimant Declaration',
             async ({ page }) => {
+
+                if (
+                    !claimantEmail ||
+                    !arbitrationDisplayName
+                ) {
+
+                    throw new Error(
+                        'Claimant declaration data is missing.'
+                    );
+                }
+
 
                 await claimantDeclaration(
                     page,
@@ -237,12 +367,23 @@ test.describe(
 
 
         // ==================================================
-        // 05 - RESPONDENT
+        // 05 - RESPONDENT DECLARATION
         // ==================================================
 
         test(
             '05 - Respondent Declaration',
             async ({ page }) => {
+
+                if (
+                    !respondentEmail ||
+                    !arbitrationDisplayName
+                ) {
+
+                    throw new Error(
+                        'Respondent declaration data is missing.'
+                    );
+                }
+
 
                 await respondentDeclaration(
                     page,
@@ -254,13 +395,17 @@ test.describe(
 
 
         // ==================================================
-        // COUNT TEST RESULTS
+        // AFTER EACH
         // ==================================================
 
         test.afterEach(
             async ({}, testInfo) => {
 
                 console.log('');
+
+                console.log(
+                    '------------------------------------------------------'
+                );
 
                 console.log(
                     `Scenario: ${testInfo.title}`
@@ -270,10 +415,10 @@ test.describe(
                     `Status  : ${testInfo.status}`
                 );
 
+                console.log(
+                    '------------------------------------------------------'
+                );
 
-                // ==================================================
-                // PASSED
-                // ==================================================
 
                 if (
                     testInfo.status === 'passed'
@@ -283,10 +428,6 @@ test.describe(
 
                 }
 
-                // ==================================================
-                // FAILED
-                // ==================================================
-
                 else if (
                     testInfo.status === 'failed'
                 ) {
@@ -294,10 +435,6 @@ test.describe(
                     failedCount++;
 
                 }
-
-                // ==================================================
-                // SKIPPED
-                // ==================================================
 
                 else if (
                     testInfo.status === 'skipped'
@@ -310,25 +447,17 @@ test.describe(
 
 
         // ==================================================
-        // FINAL SUITE SUMMARY + EMAIL
+        // AFTER ALL
         // ==================================================
 
         test.afterAll(
             async () => {
-
-                // ==================================================
-                // CALCULATE TOTAL
-                // ==================================================
 
                 const totalScenarios =
                     passedCount +
                     failedCount +
                     skippedCount;
 
-
-                // ==================================================
-                // DETERMINE OVERALL STATUS
-                // ==================================================
 
                 const overallStatus =
                     failedCount === 0 &&
@@ -337,10 +466,6 @@ test.describe(
                         : 'FAILED';
 
 
-                // ==================================================
-                // PRINT SUMMARY
-                // ==================================================
-
                 console.log('');
 
                 console.log(
@@ -348,7 +473,7 @@ test.describe(
                 );
 
                 console.log(
-                    '              DECLARATION SUITE SUMMARY'
+                    'DECLARATION SUITE SUMMARY'
                 );
 
                 console.log(
@@ -379,11 +504,9 @@ test.describe(
                     '======================================================'
                 );
 
-                console.log('');
-
 
                 // ==================================================
-                // SEND EMAIL REPORT
+                // EMAIL REPORT
                 // ==================================================
 
                 try {
@@ -391,51 +514,27 @@ test.describe(
                     await sendReport({
 
                         totalScenarios:
-
                             totalScenarios,
 
                         passedScenarios:
-
                             passedCount,
 
                         failedScenarios:
-
                             failedCount,
 
                         skippedScenarios:
-
                             skippedCount,
                     });
 
-                } catch (
-                    error
-                ) {
-
-                    // ==================================================
-                    // REPORT EMAIL FAILURE
-                    // ==================================================
+                } catch (error) {
 
                     console.error('');
 
                     console.error(
-                        '======================================================'
+                        'Failed to send Declaration Suite report.'
                     );
 
-                    console.error(
-                        'FAILED TO SEND DECLARATION SUITE REPORT'
-                    );
-
-                    console.error(
-                        '======================================================'
-                    );
-
-                    console.error(
-                        error
-                    );
-
-                    console.error(
-                        '======================================================'
-                    );
+                    console.error(error);
                 }
             }
         );

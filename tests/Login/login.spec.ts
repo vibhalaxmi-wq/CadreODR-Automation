@@ -1,35 +1,20 @@
 import { test } from '@playwright/test';
-
 import { validLogin } from '../../scenarios/Login/validLogin';
-
 import { invalidEmail } from '../../scenarios/Login/invalidEmail';
-
 import { invalidOTP } from '../../scenarios/Login/invalidOTP';
-
 import { maxLogin } from '../../scenarios/Login/maxLogin';
-
 import { loginData } from '../../testData/loginData';
-
 import { sendReport } from '../../utils/sendReport';
-
-
 // ==========================================================
 // LOGIN SUITE COUNTERS
 // ==========================================================
-
 let totalTestCases = 0;
-
 let passedTestCases = 0;
-
 let failedTestCases = 0;
-
 let skippedTestCases = 0;
-
-
 // ==========================================================
 // LOGIN SUITE
 // ==========================================================
-
 test.describe(
     'Login Sanity Suite',
     () => {

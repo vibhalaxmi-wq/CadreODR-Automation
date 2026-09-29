@@ -81,6 +81,10 @@ export class BulkActPages {
     console.log('STEP: Selecting Organization');
     console.log('------------------------------------------------------');
 
+    // --------------------------------------------------------
+    // OPEN ORGANIZATION DROPDOWN
+    // --------------------------------------------------------
+
     const dropdown = this.locators.organizationDropdown();
 
     await dropdown.waitFor({
@@ -92,21 +96,73 @@ export class BulkActPages {
 
     console.log('Organization dropdown opened');
 
-    const auto001 = this.locators.auto001Option();
+    // --------------------------------------------------------
+    // SELECT E2E01
+    // --------------------------------------------------------
 
-    await auto001.waitFor({
+    const e2e01 = this.locators.e2eOption();
+
+    await e2e01.waitFor({
       state: 'visible',
       timeout: 10000,
     });
 
-    await auto001.click();
+    await e2e01.click();
 
-    console.log('AUTO001 selected');
+    console.log('E2E01 selected');
+
+    // --------------------------------------------------------
+    // OPEN ORGANIZATION DROPDOWN AGAIN
+    // --------------------------------------------------------
+
+    console.log(
+      'Clicking Organization dropdown again...'
+    );
+
+    await dropdown.waitFor({
+      state: 'visible',
+      timeout: 10000,
+    });
+
+    await dropdown.click();
+
+    console.log(
+      'Organization dropdown opened again'
+    );
+    await this.page.waitForTimeout(1000);
+
+    // --------------------------------------------------------
+    // CLICK APPLY
+    // --------------------------------------------------------
+
+    console.log(
+      'Waiting for Apply button...'
+    );
+
+    const applyButton = this.locators.applyButton();
+
+    await expect(applyButton).toBeVisible({
+      timeout: 10000,
+    });
+    await expect(applyButton).toBeEnabled({timeout: 10000,});
+    await applyButton.click();
+    console.log('Apply button clicked');
+    // --------------------------------------------------------
+    // WAIT FOR FILTER RESULT
+    // --------------------------------------------------------
+    await this.page.waitForTimeout(1500);
+    console.log('Organization filter result loaded');
   }
-
   // ==========================================================
   // APPLY FILTER
   // ==========================================================
+
+  /*
+   * Kept for other scenarios that may need it.
+   *
+   * DO NOT call this immediately after selectOrganization()
+   * because selectOrganization() already clicks Apply.
+   */
 
   async applyFilter(): Promise<void> {
     console.log('');
@@ -126,15 +182,19 @@ export class BulkActPages {
 
     await applyButton.click();
 
-    console.log('Apply button clicked');
+    console.log(
+      'Apply button clicked'
+    );
 
     await this.page.waitForTimeout(1500);
 
-    console.log('Filter result loaded');
+    console.log(
+      'Filter result loaded'
+    );
   }
 
   // ==========================================================
-  // SELECT CLAIM
+  // SELECT FIRST CLAIM
   // ==========================================================
 
   async selectFirstClaim(): Promise<void> {
@@ -143,7 +203,8 @@ export class BulkActPages {
     console.log('STEP: Selecting First Claim');
     console.log('------------------------------------------------------');
 
-    const checkbox = this.locators.firstClaimCheckbox();
+    const checkbox =
+      this.locators.firstClaimCheckbox();
 
     await checkbox.waitFor({
       state: 'visible',
@@ -152,7 +213,9 @@ export class BulkActPages {
 
     await checkbox.check();
 
-    console.log('First claim selected');
+    console.log(
+      'First claim selected'
+    );
   }
 
   // ==========================================================
@@ -165,7 +228,8 @@ export class BulkActPages {
     console.log('STEP: Verifying Actions Button');
     console.log('------------------------------------------------------');
 
-    const actions = this.locators.actionsButton();
+    const actions =
+      this.locators.actionsButton();
 
     await expect(actions).toBeVisible({
       timeout: 10000,
@@ -175,7 +239,9 @@ export class BulkActPages {
       timeout: 10000,
     });
 
-    console.log('Actions button is visible and enabled');
+    console.log(
+      'Actions button is visible and enabled'
+    );
   }
 
   async openActions(): Promise<void> {
@@ -184,7 +250,8 @@ export class BulkActPages {
     console.log('STEP: Opening Actions');
     console.log('------------------------------------------------------');
 
-    const actions = this.locators.actionsButton();
+    const actions =
+      this.locators.actionsButton();
 
     await actions.waitFor({
       state: 'visible',
@@ -193,7 +260,9 @@ export class BulkActPages {
 
     await actions.click();
 
-    console.log('Actions menu opened');
+    console.log(
+      'Actions menu opened'
+    );
 
     await this.page.waitForTimeout(500);
   }
@@ -218,7 +287,9 @@ export class BulkActPages {
 
     await assignCaseOfficer.click();
 
-    console.log('Assign Case Officer selected');
+    console.log(
+      'Assign Case Officer selected'
+    );
   }
 
   async openCaseOfficerDropdown(): Promise<void> {
@@ -237,7 +308,9 @@ export class BulkActPages {
 
     await dropdown.click();
 
-    console.log('Case Officer dropdown opened');
+    console.log(
+      'Case Officer dropdown opened'
+    );
   }
 
   async searchCaseOfficer(): Promise<void> {
@@ -256,7 +329,9 @@ export class BulkActPages {
 
     await search.fill('bas');
 
-    console.log('Searching Case Officer: bas');
+    console.log(
+      'Searching Case Officer: bas'
+    );
   }
 
   async selectBasanagouda(): Promise<void> {
@@ -275,7 +350,9 @@ export class BulkActPages {
 
     await officer.click();
 
-    console.log('Basanagouda selected');
+    console.log(
+      'Basanagouda selected'
+    );
   }
 
   // ==========================================================
@@ -298,7 +375,9 @@ export class BulkActPages {
 
     await assignArbitrator.click();
 
-    console.log('Assign Arbitrator selected');
+    console.log(
+      'Assign Arbitrator selected'
+    );
   }
 
   async openArbitratorDropdown(): Promise<void> {
@@ -317,7 +396,9 @@ export class BulkActPages {
 
     await dropdown.click();
 
-    console.log('Arbitrator dropdown opened');
+    console.log(
+      'Arbitrator dropdown opened'
+    );
   }
 
   async searchArbitrator(): Promise<void> {
@@ -336,7 +417,9 @@ export class BulkActPages {
 
     await search.fill('vibh');
 
-    console.log('Searching Arbitrator: vibh');
+    console.log(
+      'Searching Arbitrator: vibh'
+    );
   }
 
   async selectVibhaArbitrator(): Promise<void> {
@@ -355,7 +438,9 @@ export class BulkActPages {
 
     await arbitrator.click();
 
-    console.log('Vibha Arbitrator selected');
+    console.log(
+      'Vibha Arbitrator selected'
+    );
   }
 
   // ==========================================================
@@ -382,7 +467,9 @@ export class BulkActPages {
 
     await update.click();
 
-    console.log('Update button clicked');
+    console.log(
+      'Update button clicked'
+    );
   }
 
   async confirmUpdate(): Promise<void> {
@@ -401,30 +488,34 @@ export class BulkActPages {
 
     await ok.click();
 
-    console.log('Update confirmed');
+    console.log(
+      'Update confirmed'
+    );
 
     await this.page.waitForTimeout(1000);
   }
 
   // ==========================================================
-  // OPEN AUTO007 CLAIM
+  // OPEN E2E01 CLAIM
   // ==========================================================
 
   async openAuto007Claim(): Promise<Page> {
     console.log('');
     console.log('------------------------------------------------------');
-    console.log('STEP: Opening Claim #AUTO007');
+    console.log('STEP: Opening Claim #E2E01');
     console.log('------------------------------------------------------');
 
     const claim =
-      this.locators.auto007Claim();
+      this.locators.e2e01Claim();
 
     await claim.waitFor({
       state: 'visible',
       timeout: 10000,
     });
 
-    console.log('Claim #AUTO007 is visible');
+    console.log(
+      'Claim #E2E01 is visible'
+    );
 
     const popupPromise =
       this.page.waitForEvent('popup', {
@@ -433,18 +524,24 @@ export class BulkActPages {
 
     await claim.click();
 
-    console.log('Claim #AUTO007 clicked');
+    console.log(
+      'Claim #E2E01 clicked'
+    );
 
     const popup =
       await popupPromise;
 
-    console.log('Claim opened in popup');
+    console.log(
+      'Claim opened in popup'
+    );
 
     await popup.waitForLoadState(
       'domcontentloaded'
     );
 
-    console.log('Claim popup loaded');
+    console.log(
+      'Claim popup loaded'
+    );
 
     await popup.waitForLoadState(
       'networkidle',
@@ -460,7 +557,7 @@ export class BulkActPages {
     await popup.waitForTimeout(1500);
 
     console.log(
-      'Claim #AUTO007 opened successfully'
+      'Claim #E2E01 opened successfully'
     );
 
     return popup;

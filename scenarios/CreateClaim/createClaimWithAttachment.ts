@@ -1,17 +1,5 @@
 import { Page } from '@playwright/test';
-
-import { validLogin } from '../Login/validLogin';
-
-import { logout } from '../../actions/LogoutActions';
-
-import {
-    createClaimWithAttachment as createAttachmentAction,
-} from '../../actions/ClaimActions';
-
-// ==========================================================
-// CREATE CLAIM WITH ATTACHMENT SCENARIO
-// ==========================================================
-
+import {createClaimWithAttachment as createAttachmentAction,} from '../../actions/ClaimActions';
 export async function createClaimWithAttachment(
     page: Page
 ): Promise<{
@@ -19,35 +7,47 @@ export async function createClaimWithAttachment(
     claimantEmail: string;
     respondentEmail: string;
 }> {
-
-    // ------------------------------------------------------
-    // LOGIN
-    // ------------------------------------------------------
-
-    await validLogin(page);
-
-    try {
-
-        // --------------------------------------------------
-        // CREATE CLAIM
-        // --------------------------------------------------
-
-        const result =
-            await createAttachmentAction(
-                page
-            );
-
-        return result;
-
-    } finally {
-
-        // --------------------------------------------------
-        // LOGOUT
-        // --------------------------------------------------
-
-        console.log('');
-        console.log('Starting logout...');
-
-        await logout(page);
+    console.log('');
+    console.log('======================================================');
+    console.log('CREATE CLAIM WITH ATTACHMENT SCENARIO');
+    console.log('======================================================');
+    console.log(`Current URL: ${page.url()}`);
+    console.log('Using existing logged-in browser session.');
+    // ======================================================
+    // CREATE CLAIM
+    // ======================================================
+    console.log('');
+    console.log('======================================================');
+    console.log('CREATING CLAIM WITH ATTACHMENT');
+    console.log('======================================================');
+    const result =await createAttachmentAction(page);
+    // ======================================================
+    // VERIFY RESULT
+    // ======================================================
+    if (!result) {
+        throw new Error('Create Claim With Attachment did not return a result.'
+        );
     }
+    if (!result.claimDisplayName) {
+        throw new Error(
+            'Claim display name was not returned.'
+        );
+    }
+    // ======================================================
+    // SUCCESS
+    // ======================================================
+    console.log('');
+    console.log('======================================================');
+    console.log('CLAIM WITH ATTACHMENT CREATED SUCCESSFULLY');
+    console.log('======================================================');
+    console.log(`Claim Display Name: ${result.claimDisplayName}`);
+    console.log(`Claimant Email: ${result.claimantEmail}`);
+    console.log(`Respondent Email: ${result.respondentEmail}`);
+    console.log(`Current URL: ${page.url()}`);
+    console.log('USER SESSION REMAINS ACTIVE');
+    console.log('======================================================');
+    // ======================================================
+    // RETURN RESULT
+    // ======================================================
+    return result;
 }

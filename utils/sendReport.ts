@@ -4,47 +4,63 @@ import fs from 'node:fs';
 
 import path from 'node:path';
 
+
 // ==========================================================
 // FILE PATHS
 // ==========================================================
 
 const CREDENTIALS_PATH = path.resolve(
-  __dirname,
-  '../credentials.json'
+    __dirname,
+    '../credentials.json'
 );
 
 const TOKEN_PATH = path.resolve(
-  __dirname,
-  '../token.json'
+    __dirname,
+    '../token.json'
 );
+
 
 // ==========================================================
 // EMAIL CONFIGURATION
 // ==========================================================
 
 const RECIPIENT1 =
-  'vibha.laxmi@thecadre.in';
-
-// const RECIPIENT2 =
-//   'sunil.rangaiah@thecadre.in';
+    'vibha.laxmi@thecadre.in';
 
 const SENDER =
-  'vibha.laxmi+odradmin@thecadre.in';
+    'vibha.laxmi+odradmin@thecadre.in';
+
 
 // ==========================================================
 // TYPES
 // ==========================================================
 
+export interface ScenarioResult {
+
+    name: string;
+
+    status:
+        | 'PASSED'
+        | 'FAILED'
+        | 'SKIPPED';
+
+    error?: string;
+}
+
+
 export interface SuiteReport {
 
-  totalScenarios: number;
+    totalScenarios: number;
 
-  passedScenarios: number;
+    passedScenarios: number;
 
-  failedScenarios: number;
+    failedScenarios: number;
 
-  skippedScenarios: number;
+    skippedScenarios: number;
+
+    scenarios: ScenarioResult[];
 }
+
 
 // ==========================================================
 // GET GMAIL AUTHENTICATION
@@ -52,317 +68,354 @@ export interface SuiteReport {
 
 async function getSavedAuth() {
 
-  // ========================================================
-  // CHECK CREDENTIALS
-  // ========================================================
+    if (
+        !fs.existsSync(
+            CREDENTIALS_PATH
+        )
+    ) {
 
-  if (
-    !fs.existsSync(
-      CREDENTIALS_PATH
-    )
-  ) {
+        throw new Error(
+            `credentials.json not found:\n${CREDENTIALS_PATH}`
+        );
+    }
 
-    throw new Error(
-      `credentials.json not found:\n${CREDENTIALS_PATH}`
-    );
-  }
 
-  // ========================================================
-  // CHECK TOKEN
-  // ========================================================
+    if (
+        !fs.existsSync(
+            TOKEN_PATH
+        )
+    ) {
 
-  if (
-    !fs.existsSync(
-      TOKEN_PATH
-    )
-  ) {
+        throw new Error(
+            `token.json not found:\n${TOKEN_PATH}`
+        );
+    }
 
-    throw new Error(
-      `token.json not found:\n${TOKEN_PATH}`
-    );
-  }
 
-  // ========================================================
-  // READ CREDENTIALS
-  // ========================================================
+    const credentials =
+        JSON.parse(
+            fs.readFileSync(
+                CREDENTIALS_PATH,
+                'utf8'
+            )
+        );
 
-  const credentials =
-    JSON.parse(
-      fs.readFileSync(
-        CREDENTIALS_PATH,
-        'utf8'
-      )
-    );
 
-  const config =
-    credentials.installed ??
-    credentials.web;
+    const config =
+        credentials.installed ??
+        credentials.web;
 
-  if (!config) {
 
-    throw new Error(
-      'Invalid credentials.json. ' +
-      'Expected "installed" or "web".'
-    );
-  }
+    if (!config) {
 
-  // ========================================================
-  // CREATE OAUTH CLIENT
-  // ========================================================
+        throw new Error(
+            'Invalid credentials.json. Expected "installed" or "web".'
+        );
+    }
 
-  const auth =
-    new google.auth.OAuth2(
-      config.client_id,
-      config.client_secret,
-      config.redirect_uris[0]
-    );
 
-  // ========================================================
-  // READ TOKEN
-  // ========================================================
+    const auth =
+        new google.auth.OAuth2(
+            config.client_id,
+            config.client_secret,
+            config.redirect_uris[0]
+        );
 
-  const token =
-    JSON.parse(
-      fs.readFileSync(
-        TOKEN_PATH,
-        'utf8'
-      )
+
+    const token =
+        JSON.parse(
+            fs.readFileSync(
+                TOKEN_PATH,
+                'utf8'
+            )
+        );
+
+
+    auth.setCredentials(
+        token
     );
 
-  // ========================================================
-  // SET TOKEN
-  // ========================================================
 
-  auth.setCredentials(
-    token
-  );
-
-  return auth;
+    return auth;
 }
+
 
 // ==========================================================
 // CREATE EMAIL BODY
 // ==========================================================
 
 function createEmail(
-  report: SuiteReport
+    report: SuiteReport
 ): string {
 
-  const overallStatus =
-    report.failedScenarios === 0 &&
-    report.skippedScenarios === 0
-      ? 'PASSED'
-      : 'FAILED';
+    const overallStatus =
+        report.failedScenarios === 0 &&
+        report.skippedScenarios === 0
+            ? 'PASSED'
+            : 'FAILED';
 
-  let body = '';
 
-  body +=
-    'BULK ACTIONS SUITE REPORT\n';
+    let body = '';
 
-  body +=
-    '\n';
 
-  body +=
-    '======================================================\n';
+    // ======================================================
+    // SUITE SUMMARY
+    // ======================================================
 
-  body +=
-    'SUITE SUMMARY\n';
+    body +=
+        'CADRE ODR SANITY E2E SUITE REPORT\n';
 
-  body +=
-    '======================================================\n';
+    body +=
+        '\n';
 
-  body +=
-    `Overall Status : ${overallStatus}\n`;
+    body +=
+        '======================================================\n';
 
-  body +=
-    `Total Scenarios : ${report.totalScenarios}\n`;
+    body +=
+        'SUITE SUMMARY\n';
 
-  body +=
-    `Passed          : ${report.passedScenarios}\n`;
+    body +=
+        '======================================================\n';
 
-  body +=
-    `Failed          : ${report.failedScenarios}\n`;
+    body +=
+        `Overall Status : ${overallStatus}\n`;
 
-  body +=
-    `Skipped         : ${report.skippedScenarios}\n`;
+    body +=
+        `Total Scenarios : ${report.totalScenarios}\n`;
 
-  body +=
-    '======================================================\n';
+    body +=
+        `Passed          : ${report.passedScenarios}\n`;
 
-  body +=
-    '\n';
+    body +=
+        `Failed          : ${report.failedScenarios}\n`;
 
-  body +=
-    'Scenarios covered:\n';
+    body +=
+        `Skipped         : ${report.skippedScenarios}\n`;
 
-  body +=
-    '1. Verify Actions button is visible after selecting a claim\n';
+    body +=
+        '======================================================\n';
 
-  body +=
-    '2. Assign Case Officer and verify inside the claim\n';
+    body +=
+        '\n';
 
-  body +=
-    '\n';
 
-  body +=
-    'This report was automatically generated by Playwright.\n';
+    // ======================================================
+    // SCENARIOS COVERED
+    // ======================================================
 
-  return body;
+    body +=
+        'SCENARIOS COVERED\n';
+
+    body +=
+        '======================================================\n';
+
+
+    report.scenarios.forEach(
+        (
+            scenario,
+            index
+        ) => {
+
+            body +=
+                `${index + 1}. ${scenario.name} - ${scenario.status}\n`;
+
+
+            if (
+                scenario.error
+            ) {
+
+                body +=
+                    `   Error: ${scenario.error}\n`;
+            }
+        }
+    );
+
+
+    body +=
+        '\n';
+
+
+    // ======================================================
+    // AUTOMATED MESSAGE
+    // ======================================================
+
+    body +=
+        '======================================================\n';
+
+    body +=
+        'This report mail was sent automatically by Playwright after execution of the script.\n';
+
+
+    return body;
 }
+
 
 // ==========================================================
 // SEND REPORT
 // ==========================================================
 
 export async function sendReport(
-  report: SuiteReport
+    report: SuiteReport
 ): Promise<void> {
 
-  console.log('');
+    console.log('');
 
-  console.log(
-    '======================================================'
-  );
+    console.log(
+        '======================================================'
+    );
 
-  console.log(
-    '              SENDING BULK ACTIONS REPORT'
-  );
+    console.log(
+        '             SENDING SANITY E2E REPORT'
+    );
 
-  console.log(
-    '======================================================'
-  );
+    console.log(
+        '======================================================'
+    );
 
-  // ========================================================
-  // GET GMAIL AUTHENTICATION
-  // ========================================================
 
-  const auth =
-    await getSavedAuth();
+    // ======================================================
+    // AUTHENTICATION
+    // ======================================================
 
-  // ========================================================
-  // CREATE GMAIL CLIENT
-  // ========================================================
+    const auth =
+        await getSavedAuth();
 
-  const gmail =
-    google.gmail({
-      version: 'v1',
-      auth,
+
+    // ======================================================
+    // GMAIL CLIENT
+    // ======================================================
+
+    const gmail =
+        google.gmail({
+
+            version: 'v1',
+
+            auth,
+
+        });
+
+
+    // ======================================================
+    // OVERALL STATUS
+    // ======================================================
+
+    const overallStatus =
+        report.failedScenarios === 0 &&
+        report.skippedScenarios === 0
+            ? 'PASSED'
+            : 'FAILED';
+
+
+    // ======================================================
+    // SUBJECT
+    // ======================================================
+
+    const subject =
+        `[${overallStatus}] Cadre ODR Sanity E2E Suite Report`;
+
+
+    // ======================================================
+    // BODY
+    // ======================================================
+
+    const body =
+        createEmail(
+            report
+        );
+
+
+    // ======================================================
+    // RAW EMAIL
+    // ======================================================
+
+    const emailLines = [
+
+        `From: ${SENDER}`,
+
+        `To: ${RECIPIENT1}`,
+
+        `Subject: ${subject}`,
+
+        'Content-Type: text/plain; charset="UTF-8"',
+
+        '',
+
+        body,
+
+    ];
+
+
+    const rawEmail =
+        emailLines.join(
+            '\r\n'
+        );
+
+
+    // ======================================================
+    // BASE64URL
+    // ======================================================
+
+    const encodedEmail =
+        Buffer.from(
+            rawEmail,
+            'utf8'
+        )
+            .toString('base64')
+            .replace(/\+/g, '-')
+            .replace(/\//g, '_')
+            .replace(/=+$/, '');
+
+
+    // ======================================================
+    // SEND
+    // ======================================================
+
+    await gmail.users.messages.send({
+
+        userId: 'me',
+
+        requestBody: {
+
+            raw: encodedEmail,
+
+        },
+
     });
 
-  // ========================================================
-  // DETERMINE OVERALL STATUS
-  // ========================================================
 
-  const overallStatus =
-    report.failedScenarios === 0 &&
-    report.skippedScenarios === 0
-      ? 'PASSED'
-      : 'FAILED';
+    // ======================================================
+    // SUCCESS
+    // ======================================================
 
-  // ========================================================
-  // EMAIL SUBJECT
-  // ========================================================
+    console.log('');
 
-  const subject =
-    `[${overallStatus}] Bulk Actions Suite Report`;
-
-  // ========================================================
-  // EMAIL BODY
-  // ========================================================
-
-  const body =
-    createEmail(
-      report
+    console.log(
+        'Sanity E2E report email sent successfully.'
     );
 
-  // ========================================================
-  // RAW EMAIL
-  // ========================================================
-
-  const emailLines = [
-
-    `From: ${SENDER}`,
-
-    `To: ${RECIPIENT1}`,
-
-    // If you want another recipient later:
-    // `Cc: ${RECIPIENT2}`,
-
-    `Subject: ${subject}`,
-
-    'Content-Type: text/plain; charset="UTF-8"',
-
-    '',
-
-    body,
-  ];
-
-  const rawEmail =
-    emailLines.join(
-      '\r\n'
+    console.log(
+        `Recipient: ${RECIPIENT1}`
     );
 
-  // ========================================================
-  // BASE64URL ENCODE
-  // ========================================================
+    console.log(
+        `Overall Status: ${overallStatus}`
+    );
 
-  const encodedEmail =
-    Buffer.from(
-      rawEmail,
-      'utf8'
-    )
-      .toString('base64')
-      .replace(/\+/g, '-')
-      .replace(/\//g, '_')
-      .replace(/=+$/, '');
+    console.log(
+        `Total Scenarios: ${report.totalScenarios}`
+    );
 
-  // ========================================================
-  // SEND EMAIL
-  // ========================================================
+    console.log(
+        `Passed Scenarios: ${report.passedScenarios}`
+    );
 
-  await gmail.users.messages.send({
+    console.log(
+        `Failed Scenarios: ${report.failedScenarios}`
+    );
 
-    userId: 'me',
+    console.log('');
 
-    requestBody: {
-
-      raw: encodedEmail,
-    },
-  });
-
-  // ========================================================
-  // SUCCESS
-  // ========================================================
-
-  console.log('');
-
-  console.log(
-    'Email sent successfully.'
-  );
-
-  console.log(
-    `Recipient: ${RECIPIENT1}`
-  );
-
-  console.log(
-    `Overall Status: ${overallStatus}`
-  );
-
-  console.log(
-    `Total Scenarios: ${report.totalScenarios}`
-  );
-
-  console.log(
-    `Passed Scenarios: ${report.passedScenarios}`
-  );
-
-  console.log(
-    `Failed Scenarios: ${report.failedScenarios}`
-  );
-
-  console.log('');
-
-  console.log(
-    '======================================================'
-  );
+    console.log(
+        '======================================================'
+    );
 }
