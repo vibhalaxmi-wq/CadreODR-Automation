@@ -25,7 +25,7 @@ const TOKEN_PATH = path.resolve(
 // ==========================================================
 
 const RECIPIENT1 =
-    'basanagouda.p@thecadre.in';
+    'tech_team@thecadre.in';
 
 
 const SENDER =
