@@ -32,8 +32,21 @@ export const meetingData = {
     // DATE & TIME
     // ======================================================
 
+    /*
+     * CHANGE ONLY THIS VALUE WHEN YOU WANT
+     * TO CHANGE THE MEETING DATE OR TIME.
+     *
+     * Format:
+     *
+     * YYYY-MM-DDTHH:mm
+     *
+     * Example:
+     *
+     * 2026-10-31T09:29
+     */
+
     dateTime:
-        '2026-10-05T09:29',
+        '2026-10-31T09:29',
 
 
     // ======================================================

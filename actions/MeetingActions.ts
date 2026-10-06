@@ -50,51 +50,81 @@ export class MeetingActions {
         );
 
 
-        // STEP 1
+        // ==================================================
+        // STEP 1 - OPEN SCHEDULE MEETING
+        // ==================================================
+
         await this.pages.openScheduleMeeting();
 
 
-        // STEP 2
+        // ==================================================
+        // STEP 2 - ENTER PLATFORM
+        // ==================================================
+
         await this.pages.enterPlatform(
             platform
         );
 
 
-        // STEP 3
+        // ==================================================
+        // STEP 3 - ENTER URL
+        // ==================================================
+
         await this.pages.enterUrl(
             meetingUrl
         );
 
 
-        // STEP 4
+        // ==================================================
+        // STEP 4 - OPEN PARTICIPANT DROPDOWN
+        // ==================================================
+
         await this.pages.openParticipantDropdown();
 
 
-        // STEP 5
+        // ==================================================
+        // STEP 5 - SELECT VIBHA CLAIMANT
+        // ==================================================
+
         await this.pages.selectVibhaClaimant();
 
 
-        // STEP 6
+        // ==================================================
+        // STEP 6 - CLOSE INVITEES DROPDOWN
+        // ==================================================
+
         await this.pages.closeInviteesDropdown();
 
 
-        // STEP 7
+        // ==================================================
+        // STEP 7 - VERIFY SELECTED PARTICIPANT
+        // ==================================================
+
         await this.pages.verifySelectedParticipant();
 
 
-        // STEP 8
+        // ==================================================
+        // STEP 8 - ENTER DATE & TIME
+        // ==================================================
+
         await this.pages.enterDateTime(
             dateTime
         );
 
 
-        // STEP 9
+        // ==================================================
+        // STEP 9 - SELECT DURATION
+        // ==================================================
+
         await this.pages.selectDuration(
             duration
         );
 
 
-        // STEP 10
+        // ==================================================
+        // STEP 10 - CLICK SCHEDULE
+        // ==================================================
+
         await this.pages.clickSchedule();
 
 

@@ -4,35 +4,9 @@ import {
     MeetingActions,
 } from '../../actions/MeetingActions';
 
-
-// ==========================================================
-// MEETING TEST DATA
-// ==========================================================
-
-const meetingData = {
-
-    platform:
-        'Google',
-
-    meetingUrl:
-        'https://www.google.com',
-
-    dateTime:
-        '2026-10-05T11:30',
-
-    duration:
-        '15 mins',
-
-    /*
-     * Use a stable piece of text for verification.
-     *
-     * Do not include dynamic created-at timestamps here.
-     */
-
-    verificationText:
-        'Initiated By:Vibha Laxmi',
-
-};
+import {
+    meetingData,
+} from '../../testData/meetingData';
 
 
 // ==========================================================
@@ -72,7 +46,7 @@ export async function scheduleMeetingScenario(
 
 
     // ======================================================
-    // SCHEDULE
+    // SCHEDULE MEETING
     // ======================================================
 
     await actions.scheduleMeeting(
@@ -89,11 +63,17 @@ export async function scheduleMeetingScenario(
 
 
     // ======================================================
-    // VERIFY
+    // VERIFY MEETING
     // ======================================================
 
+    /*
+     * Keep the existing verification text here.
+     *
+     * This avoids adding another property to meetingData.
+     */
+
     await actions.verifyScheduledMeeting(
-        meetingData.verificationText
+        'Initiated By:Vibha Laxmi'
     );
 
 

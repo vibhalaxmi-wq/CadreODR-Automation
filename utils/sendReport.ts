@@ -1,9 +1,6 @@
 import { google } from 'googleapis';
-
 import fs from 'node:fs';
-
 import path from 'node:path';
-
 
 // ==========================================================
 // FILE PATHS
@@ -19,18 +16,24 @@ const TOKEN_PATH = path.resolve(
     '../token.json'
 );
 
+// ==========================================================
+// PLAYWRIGHT TEST RESULTS
+// ==========================================================
+
+const TEST_RESULTS_PATH = path.resolve(
+    __dirname,
+    '../test-results'
+);
 
 // ==========================================================
 // EMAIL CONFIGURATION
 // ==========================================================
 
 const RECIPIENT1 =
-    'tech_team@thecadre.in';
-
+    'vibha.laxmi+admin@thecadre.in';
 
 const SENDER =
     'vibha.laxmi@thecadre.in';
-
 
 // ==========================================================
 // TYPES
@@ -48,7 +51,6 @@ export interface ScenarioResult {
     error?: string;
 }
 
-
 export interface SuiteReport {
 
     totalScenarios: number;
@@ -62,12 +64,15 @@ export interface SuiteReport {
     scenarios: ScenarioResult[];
 }
 
-
 // ==========================================================
 // GET GMAIL AUTHENTICATION
 // ==========================================================
 
 async function getSavedAuth() {
+
+    // ------------------------------------------------------
+    // CHECK CREDENTIALS
+    // ------------------------------------------------------
 
     if (
         !fs.existsSync(
@@ -80,6 +85,9 @@ async function getSavedAuth() {
         );
     }
 
+    // ------------------------------------------------------
+    // CHECK TOKEN
+    // ------------------------------------------------------
 
     if (
         !fs.existsSync(
@@ -92,6 +100,9 @@ async function getSavedAuth() {
         );
     }
 
+    // ------------------------------------------------------
+    // READ CREDENTIALS
+    // ------------------------------------------------------
 
     const credentials =
         JSON.parse(
@@ -101,11 +112,13 @@ async function getSavedAuth() {
             )
         );
 
+    // ------------------------------------------------------
+    // GET CONFIGURATION
+    // ------------------------------------------------------
 
     const config =
         credentials.installed ??
         credentials.web;
-
 
     if (!config) {
 
@@ -114,6 +127,9 @@ async function getSavedAuth() {
         );
     }
 
+    // ------------------------------------------------------
+    // CREATE OAUTH CLIENT
+    // ------------------------------------------------------
 
     const auth =
         new google.auth.OAuth2(
@@ -122,6 +138,9 @@ async function getSavedAuth() {
             config.redirect_uris[0]
         );
 
+    // ------------------------------------------------------
+    // READ TOKEN
+    // ------------------------------------------------------
 
     const token =
         JSON.parse(
@@ -131,15 +150,16 @@ async function getSavedAuth() {
             )
         );
 
+    // ------------------------------------------------------
+    // SET TOKEN
+    // ------------------------------------------------------
 
     auth.setCredentials(
         token
     );
 
-
     return auth;
 }
-
 
 // ==========================================================
 // CREATE EMAIL BODY
@@ -155,16 +175,14 @@ function createEmail(
             ? 'PASSED'
             : 'FAILED';
 
-
     let body = '';
-
 
     // ======================================================
     // SUITE SUMMARY
     // ======================================================
 
     body +=
-        'CADRE ODR SANITY E2E SUITE REPORT\n';
+        'CADRE ODR SANITY TEST REPORT\n';
 
     body +=
         '\n';
@@ -199,7 +217,6 @@ function createEmail(
     body +=
         '\n';
 
-
     // ======================================================
     // SCENARIOS COVERED
     // ======================================================
@@ -210,7 +227,6 @@ function createEmail(
     body +=
         '======================================================\n';
 
-
     report.scenarios.forEach(
         (
             scenario,
@@ -219,7 +235,6 @@ function createEmail(
 
             body +=
                 `${index + 1}. ${scenario.name} - ${scenario.status}\n`;
-
 
             if (
                 scenario.error
@@ -231,10 +246,8 @@ function createEmail(
         }
     );
 
-
     body +=
         '\n';
-
 
     // ======================================================
     // AUTOMATED MESSAGE
@@ -246,10 +259,255 @@ function createEmail(
     body +=
         'This report mail was sent automatically by Playwright after execution of the script.\n';
 
-
     return body;
 }
 
+// ==========================================================
+// FIND ONLY PLAYWRIGHT FAILURE SCREENSHOTS
+// ==========================================================
+
+function findFailureScreenshots(
+    directory: string
+): string[] {
+
+    const screenshots: string[] = [];
+
+    // ======================================================
+    // TEST RESULTS FOLDER DOES NOT EXIST
+    // ======================================================
+
+    if (
+        !fs.existsSync(
+            directory
+        )
+    ) {
+
+        console.log(
+            `Test results folder not found: ${directory}`
+        );
+
+        return screenshots;
+    }
+
+    // ======================================================
+    // READ DIRECTORY
+    // ======================================================
+
+    const entries =
+        fs.readdirSync(
+            directory,
+            {
+                withFileTypes: true,
+            }
+        );
+
+    // ======================================================
+    // SEARCH RECURSIVELY
+    // ======================================================
+
+    for (
+        const entry of entries
+    ) {
+
+        const fullPath =
+            path.join(
+                directory,
+                entry.name
+            );
+
+        // ==================================================
+        // DIRECTORY
+        // ==================================================
+
+        if (
+            entry.isDirectory()
+        ) {
+
+            screenshots.push(
+                ...findFailureScreenshots(
+                    fullPath
+                )
+            );
+
+            continue;
+        }
+
+        // ==================================================
+        // ONLY PLAYWRIGHT FAILURE SCREENSHOT
+        // ==================================================
+        //
+        // Examples:
+        //
+        // test-failed-1.png
+        // test-failed-2.png
+        //
+        // Other PNG files are ignored.
+        //
+        // ==================================================
+
+        if (
+            entry.isFile() &&
+            /^test-failed-\d+\.png$/i.test(
+                entry.name
+            )
+        ) {
+
+            screenshots.push(
+                fullPath
+            );
+        }
+    }
+
+    return screenshots;
+}
+
+// ==========================================================
+// CREATE MIME EMAIL
+// ==========================================================
+
+function createMimeEmail(
+    sender: string,
+    recipient: string,
+    subject: string,
+    body: string,
+    attachments: string[]
+): string {
+
+    // ======================================================
+    // MIME BOUNDARY
+    // ======================================================
+
+    const boundary =
+        `----=_PlaywrightBoundary_${Date.now()}`;
+
+    // ======================================================
+    // EMAIL HEADER
+    // ======================================================
+
+    let email = '';
+
+    email +=
+        `From: ${sender}\r\n`;
+
+    email +=
+        `To: ${recipient}\r\n`;
+
+    email +=
+        `Subject: ${subject}\r\n`;
+
+    email +=
+        'MIME-Version: 1.0\r\n';
+
+    email +=
+        `Content-Type: multipart/mixed; boundary="${boundary}"\r\n`;
+
+    email +=
+        '\r\n';
+
+    // ======================================================
+    // EMAIL BODY
+    // ======================================================
+
+    email +=
+        `--${boundary}\r\n`;
+
+    email +=
+        'Content-Type: text/plain; charset="UTF-8"\r\n';
+
+    email +=
+        'Content-Transfer-Encoding: 8bit\r\n';
+
+    email +=
+        '\r\n';
+
+    email +=
+        body;
+
+    email +=
+        '\r\n';
+
+    // ======================================================
+    // ATTACH ONLY FAILURE SCREENSHOTS
+    // ======================================================
+
+    for (
+        const attachmentPath of attachments
+    ) {
+
+        try {
+
+            const fileName =
+                path.basename(
+                    attachmentPath
+                );
+
+            const fileData =
+                fs.readFileSync(
+                    attachmentPath
+                );
+
+            const base64Data =
+                fileData.toString(
+                    'base64'
+                );
+
+            // ------------------------------------------------
+            // ATTACHMENT HEADER
+            // ------------------------------------------------
+
+            email +=
+                `--${boundary}\r\n`;
+
+            email +=
+                'Content-Type: image/png\r\n';
+
+            email +=
+                'Content-Transfer-Encoding: base64\r\n';
+
+            email +=
+                `Content-Disposition: attachment; filename="${fileName}"\r\n`;
+
+            email +=
+                '\r\n';
+
+            // ------------------------------------------------
+            // BASE64 DATA
+            // ------------------------------------------------
+
+            for (
+                let i = 0;
+                i < base64Data.length;
+                i += 76
+            ) {
+
+                email +=
+                    base64Data.substring(
+                        i,
+                        i + 76
+                    );
+
+                email +=
+                    '\r\n';
+            }
+
+        } catch (error) {
+
+            console.error(
+                `Unable to attach screenshot: ${attachmentPath}`,
+                error
+            );
+        }
+    }
+
+    // ======================================================
+    // CLOSE MIME
+    // ======================================================
+
+    email +=
+        `--${boundary}--\r\n`;
+
+    return email;
+}
 
 // ==========================================================
 // SEND REPORT
@@ -273,7 +531,6 @@ export async function sendReport(
         '======================================================'
     );
 
-
     // ======================================================
     // AUTHENTICATION
     // ======================================================
@@ -281,20 +538,15 @@ export async function sendReport(
     const auth =
         await getSavedAuth();
 
-
     // ======================================================
     // GMAIL CLIENT
     // ======================================================
 
     const gmail =
         google.gmail({
-
             version: 'v1',
-
             auth,
-
         });
-
 
     // ======================================================
     // OVERALL STATUS
@@ -306,17 +558,15 @@ export async function sendReport(
             ? 'PASSED'
             : 'FAILED';
 
-
     // ======================================================
     // SUBJECT
     // ======================================================
 
     const subject =
-        `[${overallStatus}] Cadre ODR Sanity E2E Suite Report`;
-
+        'Automation Cadre ODR Sanity Test Report';
 
     // ======================================================
-    // BODY
+    // EMAIL BODY
     // ======================================================
 
     const body =
@@ -324,33 +574,64 @@ export async function sendReport(
             report
         );
 
-
     // ======================================================
-    // RAW EMAIL
+    // FIND FAILURE SCREENSHOTS
     // ======================================================
 
-    const emailLines = [
+    console.log('');
 
-        `From: ${SENDER}`,
+    console.log(
+        'Searching for Playwright failure screenshots...'
+    );
 
-        `To: ${RECIPIENT1}`,
-
-        `Subject: ${subject}`,
-
-        'Content-Type: text/plain; charset="UTF-8"',
-
-        '',
-
-        body,
-
-    ];
-
-
-    const rawEmail =
-        emailLines.join(
-            '\r\n'
+    const screenshots =
+        findFailureScreenshots(
+            TEST_RESULTS_PATH
         );
 
+    // ======================================================
+    // DISPLAY SCREENSHOT INFORMATION
+    // ======================================================
+
+    if (
+        screenshots.length === 0
+    ) {
+
+        console.log(
+            'No Playwright failure screenshots found.'
+        );
+
+    } else {
+
+        console.log(
+            `Found ${screenshots.length} Playwright failure screenshot(s).`
+        );
+
+        screenshots.forEach(
+            (
+                screenshot,
+                index
+            ) => {
+
+                console.log(
+                    `  ${index + 1}. ${screenshot}`
+                );
+            }
+        );
+    }
+
+    // ======================================================
+    // CREATE MIME EMAIL
+    // ======================================================
+
+    const rawEmail =
+        createMimeEmail(
+            SENDER,
+            RECIPIENT1,
+            subject,
+            body,
+            screenshots
+        );
 
     // ======================================================
     // BASE64URL
@@ -366,9 +647,8 @@ export async function sendReport(
             .replace(/\//g, '_')
             .replace(/=+$/, '');
 
-
     // ======================================================
-    // SEND
+    // SEND EMAIL
     // ======================================================
 
     await gmail.users.messages.send({
@@ -378,11 +658,8 @@ export async function sendReport(
         requestBody: {
 
             raw: encodedEmail,
-
         },
-
     });
-
 
     // ======================================================
     // SUCCESS
@@ -412,6 +689,10 @@ export async function sendReport(
 
     console.log(
         `Failed Scenarios: ${report.failedScenarios}`
+    );
+
+    console.log(
+        `Failure Screenshots Attached: ${screenshots.length}`
     );
 
     console.log('');

@@ -67,6 +67,15 @@ import {
 
 
 // ==========================================================
+// MORE FILTERS
+// ==========================================================
+
+import {
+    applyMoreFilter,
+} from '../../scenarios/MoreFilters/applyMoreFilter';
+
+
+// ==========================================================
 // LOGOUT
 // ==========================================================
 
@@ -94,7 +103,7 @@ test.describe.serial(
     () => {
 
         test.setTimeout(
-            600000
+            600000,
         );
 
 
@@ -110,7 +119,7 @@ test.describe.serial(
 
 
                 const recordPassed = (
-                    name: string
+                    name: string,
                 ): void => {
 
                     scenarios.push({
@@ -122,7 +131,7 @@ test.describe.serial(
 
                 const recordFailed = (
                     name: string,
-                    error: unknown
+                    error: unknown,
                 ): void => {
 
                     scenarios.push({
@@ -138,7 +147,7 @@ test.describe.serial(
 
                 const recordSkipped = (
                     name: string,
-                    reason: string
+                    reason: string,
                 ): void => {
 
                     scenarios.push({
@@ -167,15 +176,15 @@ test.describe.serial(
 
                     console.log('');
                     console.log(
-                        '======================================================'
+                        '======================================================',
                     );
 
                     console.log(
-                        'STARTING COMPLETE ARBITRATION E2E FLOW'
+                        'STARTING COMPLETE ARBITRATION E2E FLOW',
                     );
 
                     console.log(
-                        '======================================================'
+                        '======================================================',
                     );
 
 
@@ -185,23 +194,15 @@ test.describe.serial(
 
                     console.log('');
                     console.log(
-                        'STEP 01 - LOGIN + CREATE ARBITRATION CLAIM'
+                        'STEP 01 - LOGIN + CREATE ARBITRATION CLAIM',
                     );
 
 
                     try {
 
-                        /*
-                         * Existing implementation:
-                         *
-                         * createArbitrationClaimScenario()
-                         * performs login and then creates the claim
-                         * using the SAME page/session.
-                         */
-
                         arbitrationClaimDisplayName =
                             await createArbitrationClaimScenario(
-                                page
+                                page,
                             );
 
 
@@ -210,39 +211,27 @@ test.describe.serial(
                         ) {
 
                             throw new Error(
-                                'Arbitration claim display name was not returned.'
+                                'Arbitration claim display name was not returned.',
                             );
                         }
 
 
-                        /*
-                         * IMPORTANT:
-                         *
-                         * Because login is currently inside
-                         * createArbitrationClaimScenario(),
-                         * we can only report Login as passed
-                         * when the complete operation succeeds.
-                         *
-                         * If you later separate login into its own
-                         * scenario, this should be changed.
-                         */
-
                         recordPassed(
-                            'Login'
+                            'Login',
                         );
 
 
                         recordPassed(
-                            'Create Arbitration Claim'
+                            'Create Arbitration Claim',
                         );
 
 
                         console.log(
-                            'Login scenario passed.'
+                            'Login scenario passed.',
                         );
 
                         console.log(
-                            `Created Claim: ${arbitrationClaimDisplayName}`
+                            `Created Claim: ${arbitrationClaimDisplayName}`,
                         );
 
                     }
@@ -252,12 +241,12 @@ test.describe.serial(
 
                         recordFailed(
                             'Login',
-                            error
+                            error,
                         );
 
                         recordFailed(
                             'Create Arbitration Claim',
-                            error
+                            error,
                         );
 
 
@@ -275,23 +264,23 @@ test.describe.serial(
 
                         console.log('');
                         console.log(
-                            'STEP 02 - ASSIGN CASE MANAGERS'
+                            'STEP 02 - ASSIGN CASE MANAGERS',
                         );
 
 
                         await assignCaseManagersScenario(
                             page,
-                            arbitrationClaimDisplayName
+                            arbitrationClaimDisplayName,
                         );
 
 
                         recordPassed(
-                            'Assign Case Managers'
+                            'Assign Case Managers',
                         );
 
 
                         console.log(
-                            'Case managers assigned successfully.'
+                            'Case managers assigned successfully.',
                         );
 
                     }
@@ -301,7 +290,7 @@ test.describe.serial(
 
                         recordFailed(
                             'Assign Case Managers',
-                            error
+                            error,
                         );
 
 
@@ -319,22 +308,22 @@ test.describe.serial(
 
                         console.log('');
                         console.log(
-                            'STEP 03 - ADD PARTIES'
+                            'STEP 03 - ADD PARTIES',
                         );
 
 
                         await addPartiesToCurrentClaim(
-                            page
+                            page,
                         );
 
 
                         recordPassed(
-                            'Add Parties'
+                            'Add Parties',
                         );
 
 
                         console.log(
-                            'All parties added successfully.'
+                            'All parties added successfully.',
                         );
 
                     }
@@ -344,7 +333,7 @@ test.describe.serial(
 
                         recordFailed(
                             'Add Parties',
-                            error
+                            error,
                         );
 
 
@@ -362,22 +351,22 @@ test.describe.serial(
 
                         console.log('');
                         console.log(
-                            'STEP 04 - RESPOND TO PROCEEDINGS'
+                            'STEP 04 - RESPOND TO PROCEEDINGS',
                         );
 
 
                         await respondToProceedings(
-                            page
+                            page,
                         );
 
 
                         recordPassed(
-                            'Respond to Proceedings'
+                            'Respond to Proceedings',
                         );
 
 
                         console.log(
-                            'Proceedings response completed successfully.'
+                            'Proceedings response completed successfully.',
                         );
 
                     }
@@ -387,7 +376,7 @@ test.describe.serial(
 
                         recordFailed(
                             'Respond to Proceedings',
-                            error
+                            error,
                         );
 
 
@@ -405,22 +394,22 @@ test.describe.serial(
 
                         console.log('');
                         console.log(
-                            'STEP 05 - ADD MESSAGE TAGS'
+                            'STEP 05 - ADD MESSAGE TAGS',
                         );
 
 
                         await messageTagsScenario(
-                            page
+                            page,
                         );
 
 
                         recordPassed(
-                            'Add Message Tags'
+                            'Add Message Tags',
                         );
 
 
                         console.log(
-                            'Message tags added successfully.'
+                            'Message tags added successfully.',
                         );
 
                     }
@@ -430,7 +419,7 @@ test.describe.serial(
 
                         recordFailed(
                             'Add Message Tags',
-                            error
+                            error,
                         );
 
 
@@ -448,22 +437,22 @@ test.describe.serial(
 
                         console.log('');
                         console.log(
-                            'STEP 06 - CHANGE AND VERIFY STATUS'
+                            'STEP 06 - CHANGE AND VERIFY STATUS',
                         );
 
 
                         await statusChange(
-                            page
+                            page,
                         );
 
 
                         recordPassed(
-                            'Change and Verify Status'
+                            'Change and Verify Status',
                         );
 
 
                         console.log(
-                            'Status change flow completed successfully.'
+                            'Status change flow completed successfully.',
                         );
 
                     }
@@ -473,7 +462,7 @@ test.describe.serial(
 
                         recordFailed(
                             'Change and Verify Status',
-                            error
+                            error,
                         );
 
 
@@ -491,22 +480,22 @@ test.describe.serial(
 
                         console.log('');
                         console.log(
-                            'STEP 07 - SCHEDULE AND VERIFY MEETING'
+                            'STEP 07 - SCHEDULE AND VERIFY MEETING',
                         );
 
 
                         await scheduleMeetingScenario(
-                            page
+                            page,
                         );
 
 
                         recordPassed(
-                            'Schedule and Verify Meeting'
+                            'Schedule and Verify Meeting',
                         );
 
 
                         console.log(
-                            'Meeting scheduled and verified successfully.'
+                            'Meeting scheduled and verified successfully.',
                         );
 
                     }
@@ -516,7 +505,58 @@ test.describe.serial(
 
                         recordFailed(
                             'Schedule and Verify Meeting',
-                            error
+                            error,
+                        );
+
+
+                        flowFailed = true;
+
+                        throw error;
+                    }
+
+
+                    // ==================================================
+                    // STEP 08 - MORE FILTERS
+                    // ==================================================
+
+                    try {
+
+                        console.log('');
+                        console.log(
+                            '======================================================',
+                        );
+
+                        console.log(
+                            'STEP 08 - ALL CLAIMS + LIST VIEW + MORE FILTERS',
+                        );
+
+                        console.log(
+                            '======================================================',
+                        );
+
+
+                        await applyMoreFilter(
+                            page,
+                        );
+
+
+                        recordPassed(
+                            'Apply More Filter - Organization',
+                        );
+
+
+                        console.log(
+                            'All Claims → List View → Organization filter applied and verified successfully.',
+                        );
+
+                    }
+                    catch (
+                        error
+                    ) {
+
+                        recordFailed(
+                            'Apply More Filter - Organization',
+                            error,
                         );
 
 
@@ -532,15 +572,15 @@ test.describe.serial(
 
                     console.log('');
                     console.log(
-                        '======================================================'
+                        '======================================================',
                     );
 
                     console.log(
-                        'COMPLETE ARBITRATION E2E FLOW PASSED'
+                        'COMPLETE ARBITRATION E2E FLOW PASSED',
                     );
 
                     console.log(
-                        '======================================================'
+                        '======================================================',
                     );
 
                 }
@@ -564,6 +604,7 @@ test.describe.serial(
                             'Add Message Tags',
                             'Change and Verify Status',
                             'Schedule and Verify Meeting',
+                            'Apply More Filter - Organization',
 
                         ];
 
@@ -576,7 +617,7 @@ test.describe.serial(
                             const alreadyRecorded =
                                 scenarios.some(
                                     scenario =>
-                                        scenario.name === scenarioName
+                                        scenario.name === scenarioName,
                                 );
 
 
@@ -586,7 +627,7 @@ test.describe.serial(
 
                                 recordSkipped(
                                     scenarioName,
-                                    'Skipped because a previous E2E step failed.'
+                                    'Skipped because a previous E2E step failed.',
                                 );
                             }
                         }
@@ -594,30 +635,22 @@ test.describe.serial(
 
 
                     // ==================================================
-                    // STEP 08 - LOGOUT
+                    // STEP 09 - LOGOUT
                     // ==================================================
 
                     console.log('');
                     console.log(
-                        '======================================================'
+                        '======================================================',
                     );
 
                     console.log(
-                        'STEP 08 - LOGOUT'
+                        'STEP 09 - LOGOUT',
                     );
 
                     console.log(
-                        '======================================================'
+                        '======================================================',
                     );
 
-
-                    /*
-                     * Only attempt logout if the login flow
-                     * actually reached an authenticated state.
-                     *
-                     * We use the claim name as a simple indication
-                     * that login + claim creation succeeded.
-                     */
 
                     if (
                         arbitrationClaimDisplayName
@@ -626,17 +659,17 @@ test.describe.serial(
                         try {
 
                             await logoutScenario(
-                                page
+                                page,
                             );
 
 
                             recordPassed(
-                                'Logout'
+                                'Logout',
                             );
 
 
                             console.log(
-                                'Logout completed successfully.'
+                                'Logout completed successfully.',
                             );
 
                         }
@@ -646,13 +679,13 @@ test.describe.serial(
 
                             recordFailed(
                                 'Logout',
-                                error
+                                error,
                             );
 
 
                             console.error(
                                 'Logout failed:',
-                                error
+                                error,
                             );
                         }
 
@@ -661,12 +694,12 @@ test.describe.serial(
 
                         recordSkipped(
                             'Logout',
-                            'Skipped because login was not completed.'
+                            'Skipped because login was not completed.',
                         );
 
 
                         console.log(
-                            'Logout skipped because login was not completed.'
+                            'Logout skipped because login was not completed.',
                         );
                     }
 
@@ -677,15 +710,15 @@ test.describe.serial(
 
                     console.log('');
                     console.log(
-                        '======================================================'
+                        '======================================================',
                     );
 
                     console.log(
-                        'PREPARING SANITY E2E REPORT'
+                        'PREPARING SANITY E2E REPORT',
                     );
 
                     console.log(
-                        '======================================================'
+                        '======================================================',
                     );
 
 
@@ -696,38 +729,38 @@ test.describe.serial(
                     const passedScenarios =
                         scenarios.filter(
                             scenario =>
-                                scenario.status === 'PASSED'
+                                scenario.status === 'PASSED',
                         ).length;
 
 
                     const failedScenarios =
                         scenarios.filter(
                             scenario =>
-                                scenario.status === 'FAILED'
+                                scenario.status === 'FAILED',
                         ).length;
 
 
                     const skippedScenarios =
                         scenarios.filter(
                             scenario =>
-                                scenario.status === 'SKIPPED'
+                                scenario.status === 'SKIPPED',
                         ).length;
 
 
                     console.log(
-                        `Total Scenarios: ${totalScenarios}`
+                        `Total Scenarios: ${totalScenarios}`,
                     );
 
                     console.log(
-                        `Passed Scenarios: ${passedScenarios}`
+                        `Passed Scenarios: ${passedScenarios}`,
                     );
 
                     console.log(
-                        `Failed Scenarios: ${failedScenarios}`
+                        `Failed Scenarios: ${failedScenarios}`,
                     );
 
                     console.log(
-                        `Skipped Scenarios: ${skippedScenarios}`
+                        `Skipped Scenarios: ${skippedScenarios}`,
                     );
 
 
@@ -737,7 +770,7 @@ test.describe.serial(
 
                     console.log('');
                     console.log(
-                        'SCENARIO RESULTS'
+                        'SCENARIO RESULTS',
                     );
 
 
@@ -747,7 +780,7 @@ test.describe.serial(
                     ) {
 
                         console.log(
-                            `${scenario.status} - ${scenario.name}`
+                            `${scenario.status} - ${scenario.name}`,
                         );
                     }
 
@@ -774,7 +807,7 @@ test.describe.serial(
 
 
                         console.log(
-                            'Sanity E2E report sent successfully.'
+                            'Sanity E2E report sent successfully.',
                         );
 
                     }
@@ -782,14 +815,9 @@ test.describe.serial(
                         error
                     ) {
 
-                        /*
-                         * Do not replace the actual E2E result
-                         * with a report/email failure.
-                         */
-
                         console.error(
                             'Failed to send Sanity E2E report:',
-                            error
+                            error,
                         );
                     }
 
@@ -800,32 +828,32 @@ test.describe.serial(
 
                     console.log('');
                     console.log(
-                        '======================================================'
+                        '======================================================',
                     );
 
                     console.log(
-                        'SANITY E2E EXECUTION COMPLETED'
+                        'SANITY E2E EXECUTION COMPLETED',
                     );
 
                     console.log(
-                        '======================================================'
+                        '======================================================',
                     );
 
                     console.log(
-                        'Browser session has been logged out.'
+                        'Browser session has been logged out.',
                     );
 
                     console.log(
-                        'Playwright will now close the browser automatically.'
+                        'Playwright will now close the browser automatically.',
                     );
 
                     console.log(
-                        '======================================================'
+                        '======================================================',
                     );
                 }
 
-            }
+            },
         );
 
-    }
+    },
 );

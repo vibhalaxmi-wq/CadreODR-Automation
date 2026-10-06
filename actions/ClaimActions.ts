@@ -1,41 +1,23 @@
 import { Page } from '@playwright/test';
 import fs from 'fs';
-
 import { ClaimPage } from '../pages/ClaimPage';
-
 import { claimData } from '../testData/claimData';
-
-
 // ==========================================================
 // FILL COMMON CLAIM DETAILS
 // ==========================================================
-
 async function fillCommonClaimDetails(
     claimPage: ClaimPage
 ): Promise<void> {
-
-    await claimPage.enterDisputeAmount(
-        claimData.common.disputeAmount
-    );
-
-    await claimPage.enterContract(
-        claimData.common.contract
-    );
-
-    await claimPage.enterJurisdiction(
-        claimData.common.jurisdiction
-    );
+    await claimPage.enterDisputeAmount(claimData.common.disputeAmount);
+    await claimPage.enterContract(claimData.common.contract);
+    await claimPage.enterJurisdiction(claimData.common.jurisdiction);
 }
-
-
 // ==========================================================
 // ADD CLAIMANT
 // ==========================================================
-
 async function addClaimant(
     claimPage: ClaimPage
 ): Promise<void> {
-
     await claimPage.addParty(
         claimData.claimant.name,
         claimData.claimant.email,
@@ -43,17 +25,13 @@ async function addClaimant(
         claimData.claimant.address
     );
 }
-
-
 // ==========================================================
 // ADD RESPONDENT
 // ==========================================================
-
 async function addRespondent(
     claimPage: ClaimPage,
     phone: string
 ): Promise<void> {
-
     await claimPage.addParty(
         claimData.respondent.name,
         claimData.respondent.email,
@@ -62,8 +40,6 @@ async function addRespondent(
         'Respondent'
     );
 }
-
-
 // ==========================================================
 // CREATE ARBITRATION CLAIM
 // ==========================================================
@@ -71,42 +47,15 @@ async function addRespondent(
 async function createArbitrationClaim(
     claimPage: ClaimPage
 ): Promise<string> {
-
     console.log('');
-
-    console.log(
-        '======================================================'
-    );
-
-    console.log(
-        'Creating Arbitration Claim'
-    );
-
-    console.log(
-        '======================================================'
-    );
-
-
+    console.log('======================================================');
+    console.log('Creating Arbitration Claim');
+    console.log('======================================================');
     await claimPage.clickNewClaim();
-
-
     await claimPage.verifyNewClaimForm();
-
-
-    await claimPage.selectOrganization(
-        claimData.common.organization
-    );
-
-
-    await addClaimant(
-        claimPage
-    );
-
-
-    await addRespondent(
-        claimPage,
-        claimData.respondent.arbitrationPhone
-    );
+    await claimPage.selectOrganization(claimData.common.organization);
+    await addClaimant(claimPage);
+    await addRespondent(claimPage,claimData.respondent.arbitrationPhone);
 
 
     await fillCommonClaimDetails(

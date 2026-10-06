@@ -1,4 +1,7 @@
-import { Locator, Page } from '@playwright/test';
+import {
+    Locator,
+    Page,
+} from '@playwright/test';
 
 
 // ==========================================================
@@ -167,6 +170,18 @@ export class MeetingLocators {
                 name: 'Date & Time *',
                 exact: true,
             }
+        );
+    }
+
+
+    // ======================================================
+    // DATE & TIME - FALLBACK
+    // ======================================================
+
+    dateTimeInputFallback(): Locator {
+
+        return this.meetingDialog().locator(
+            'input[type="datetime-local"]'
         );
     }
 

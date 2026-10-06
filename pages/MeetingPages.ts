@@ -210,12 +210,6 @@ export class MeetingPages {
         });
 
 
-        /*
-         * Search specifically for Vibha.
-         *
-         * We do NOT search for Smith/respondent.
-         */
-
         await search.fill(
             'vibha'
         );
@@ -328,16 +322,6 @@ export class MeetingPages {
             this.locators.selectedParticipants();
 
 
-        /*
-         * The DOM from the failure shows:
-         *
-         * combobox "Invitees":
-         *     paragraph: 1 Selected
-         *
-         * Therefore we verify the Invitees control,
-         * not the "--Select--" duration control.
-         */
-
         await expect(
             selected
         ).toBeVisible({
@@ -358,11 +342,6 @@ export class MeetingPages {
         const search =
             this.locators.participantSearch();
 
-
-        /*
-         * If the participant dropdown is still open,
-         * click Invitees exactly ONCE.
-         */
 
         if (
             await search.isVisible()
@@ -387,11 +366,6 @@ export class MeetingPages {
             );
         }
 
-
-        /*
-         * Confirm the participant search is no longer
-         * visible before continuing.
-         */
 
         await expect(
             search
@@ -459,8 +433,25 @@ export class MeetingPages {
         );
 
 
-        const textbox =
+        // ==================================================
+        // FIND DATE/TIME INPUT
+        // ==================================================
+
+        let textbox =
             this.locators.dateTime();
+
+
+        /*
+         * First try the accessible Date & Time textbox.
+         */
+
+        if (
+            await textbox.count() === 0
+        ) {
+
+            textbox =
+                this.locators.dateTimeInputFallback();
+        }
 
 
         await expect(
@@ -470,13 +461,92 @@ export class MeetingPages {
         });
 
 
+        // ==================================================
+        // VERIFY INPUT TYPE
+        // ==================================================
+
+        const inputType =
+            await textbox.getAttribute(
+                'type'
+            );
+
+
+        console.log(
+            `Date & Time input type: ${inputType}`
+        );
+
+
+        // ==================================================
+        // CLICK DATE/TIME FIELD
+        // ==================================================
+
+        await textbox.click();
+
+
+        // ==================================================
+        // CLEAR EXISTING DATE
+        // ==================================================
+
+        await textbox.press(
+            'Control+A'
+        );
+
+
+        await textbox.press(
+            'Backspace'
+        );
+
+
+        // ==================================================
+        // ENTER NEW DATE/TIME
+        // ==================================================
+
         await textbox.fill(
             dateTime
         );
 
 
+        /*
+         * Trigger the normal browser events so that
+         * React / Angular / Vue controlled inputs receive
+         * the updated value correctly.
+         */
+
+        await textbox.dispatchEvent(
+            'input'
+        );
+
+
+        await textbox.dispatchEvent(
+            'change'
+        );
+
+
+        // ==================================================
+        // MOVE FOCUS AWAY
+        // ==================================================
+
+        await textbox.press(
+            'Tab'
+        );
+
+
+        // ==================================================
+        // VERIFY ACTUAL VALUE
+        // ==================================================
+
+        await expect(
+            textbox
+        ).toHaveValue(
+            dateTime,
+            {
+                timeout: 10000,
+            }
+        );
+
+
         console.log(
-            'Date & Time entered successfully.'
+            `Date & Time entered and verified successfully: ${dateTime}`
         );
     }
 
@@ -568,11 +638,6 @@ export class MeetingPages {
             'Schedule button clicked successfully.'
         );
 
-
-        /*
-         * The meeting dialog should close after a
-         * successful schedule operation.
-         */
 
         await expect(
             this.locators.meetingDialog()
