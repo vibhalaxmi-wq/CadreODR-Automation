@@ -67,12 +67,21 @@ import {
 
 
 // ==========================================================
-// MORE FILTERS
+// MORE FILTERS - ORGANIZATION
 // ==========================================================
 
 import {
     applyMoreFilter,
 } from '../../scenarios/MoreFilters/applyMoreFilter';
+
+
+// ==========================================================
+// MORE FILTERS - DISPLAY NAME
+// ==========================================================
+
+import {
+    displayNameFilter,
+} from '../../scenarios/MoreFilters/displayNameFilter';
 
 
 // ==========================================================
@@ -159,10 +168,17 @@ test.describe.serial(
 
 
                 // ==================================================
-                // CLAIM NAME
+                // CLAIM DISPLAY NAME
                 // ==================================================
 
                 let arbitrationClaimDisplayName = '';
+
+
+                // ==================================================
+                // LOGIN COMPLETED FLAG
+                // ==================================================
+
+                let loginCompleted = false;
 
 
                 // ==================================================
@@ -172,7 +188,40 @@ test.describe.serial(
                 let flowFailed = false;
 
 
+                // ==================================================
+                // EXPECTED SCENARIOS
+                // ==================================================
+
+                const expectedScenarios = [
+
+                    'Login',
+
+                    'Create Arbitration Claim',
+
+                    'Assign Case Managers',
+
+                    'Add Parties',
+
+                    'Respond to Proceedings',
+
+                    'Add Message Tags',
+
+                    'Change and Verify Status',
+
+                    'Schedule and Verify Meeting',
+
+                    'Apply More Filter - Organization',
+
+                    'Apply More Filter - Display Name',
+
+                ];
+
+
                 try {
+
+                    // ==================================================
+                    // START
+                    // ==================================================
 
                     console.log('');
                     console.log(
@@ -191,6 +240,16 @@ test.describe.serial(
                     // ==================================================
                     // STEP 01 - LOGIN + CREATE CLAIM
                     // ==================================================
+                    //
+                    // IMPORTANT:
+                    // Login is handled INSIDE
+                    // createArbitrationClaimScenario().
+                    //
+                    // The Sanity Suite does NOT call validLogin()
+                    // separately.
+                    //
+                    // This keeps ONE LOGIN + ONE PAGE + ONE BROWSER.
+                    // ==================================================
 
                     console.log('');
                     console.log(
@@ -200,6 +259,15 @@ test.describe.serial(
 
                     try {
 
+                        console.log(
+                            'Calling createArbitrationClaimScenario()...',
+                        );
+
+                        console.log(
+                            'Login will be performed inside the Create Claim scenario.',
+                        );
+
+
                         arbitrationClaimDisplayName =
                             await createArbitrationClaimScenario(
                                 page,
@@ -207,13 +275,23 @@ test.describe.serial(
 
 
                         if (
-                            !arbitrationClaimDisplayName
+                            !arbitrationClaimDisplayName ||
+                            arbitrationClaimDisplayName.trim() === ''
                         ) {
 
                             throw new Error(
                                 'Arbitration claim display name was not returned.',
                             );
                         }
+
+
+                        // --------------------------------------------------
+                        // Create Claim scenario has successfully completed.
+                        // Therefore login + claim creation are considered
+                        // successful.
+                        // --------------------------------------------------
+
+                        loginCompleted = true;
 
 
                         recordPassed(
@@ -230,6 +308,7 @@ test.describe.serial(
                             'Login scenario passed.',
                         );
 
+
                         console.log(
                             `Created Claim: ${arbitrationClaimDisplayName}`,
                         );
@@ -239,10 +318,20 @@ test.describe.serial(
                         error
                     ) {
 
+                        // --------------------------------------------------
+                        // Because login happens inside createArbitrationClaim
+                        // we cannot separately know whether login or claim
+                        // creation failed.
+                        //
+                        // Therefore both are recorded as failed, matching
+                        // your existing working reporting approach.
+                        // --------------------------------------------------
+
                         recordFailed(
                             'Login',
                             error,
                         );
+
 
                         recordFailed(
                             'Create Arbitration Claim',
@@ -251,6 +340,7 @@ test.describe.serial(
 
 
                         flowFailed = true;
+
 
                         throw error;
                     }
@@ -296,6 +386,7 @@ test.describe.serial(
 
                         flowFailed = true;
 
+
                         throw error;
                     }
 
@@ -338,6 +429,7 @@ test.describe.serial(
 
 
                         flowFailed = true;
+
 
                         throw error;
                     }
@@ -382,6 +474,7 @@ test.describe.serial(
 
                         flowFailed = true;
 
+
                         throw error;
                     }
 
@@ -424,6 +517,7 @@ test.describe.serial(
 
 
                         flowFailed = true;
+
 
                         throw error;
                     }
@@ -468,6 +562,7 @@ test.describe.serial(
 
                         flowFailed = true;
 
+
                         throw error;
                     }
 
@@ -511,6 +606,7 @@ test.describe.serial(
 
                         flowFailed = true;
 
+
                         throw error;
                     }
 
@@ -535,6 +631,16 @@ test.describe.serial(
                         );
 
 
+                        // ==================================================
+                        // STEP 08.1 - ORGANIZATION FILTER
+                        // ==================================================
+
+                        console.log('');
+                        console.log(
+                            'STEP 08.1 - ORGANIZATION FILTER',
+                        );
+
+
                         await applyMoreFilter(
                             page,
                         );
@@ -549,18 +655,106 @@ test.describe.serial(
                             'All Claims → List View → Organization filter applied and verified successfully.',
                         );
 
+
+                        // ==================================================
+                        // STEP 08.2 - DISPLAY NAME FILTER
+                        // ==================================================
+
+                        console.log('');
+                        console.log(
+                            '======================================================',
+                        );
+
+                        console.log(
+                            'STEP 08.2 - DISPLAY NAME FILTER',
+                        );
+
+                        console.log(
+                            '======================================================',
+                        );
+
+
+                        console.log(
+                            `Searching captured Display Name: ${arbitrationClaimDisplayName}`,
+                        );
+
+
+                        if (
+                            !arbitrationClaimDisplayName ||
+                            arbitrationClaimDisplayName.trim() === ''
+                        ) {
+
+                            throw new Error(
+                                'Cannot apply Display Name filter because the claim display name is empty.',
+                            );
+                        }
+
+
+                        await displayNameFilter(
+                            page,
+                            arbitrationClaimDisplayName,
+                        );
+
+
+                        recordPassed(
+                            'Apply More Filter - Display Name',
+                        );
+
+
+                        console.log(
+                            'Display Name filter applied and verified successfully.',
+                        );
+
                     }
                     catch (
                         error
                     ) {
 
-                        recordFailed(
-                            'Apply More Filter - Organization',
-                            error,
-                        );
+                        // --------------------------------------------------
+                        // Organization may already have passed.
+                        // Therefore identify which filter failed.
+                        // --------------------------------------------------
+
+                        const organizationRecorded =
+                            scenarios.some(
+                                scenario =>
+                                    scenario.name ===
+                                    'Apply More Filter - Organization',
+                            );
+
+
+                        const displayNameRecorded =
+                            scenarios.some(
+                                scenario =>
+                                    scenario.name ===
+                                    'Apply More Filter - Display Name',
+                            );
+
+
+                        if (
+                            !organizationRecorded
+                        ) {
+
+                            recordFailed(
+                                'Apply More Filter - Organization',
+                                error,
+                            );
+
+                        }
+                        else if (
+                            !displayNameRecorded
+                        ) {
+
+                            recordFailed(
+                                'Apply More Filter - Display Name',
+                                error,
+                            );
+
+                        }
 
 
                         flowFailed = true;
+
 
                         throw error;
                     }
@@ -594,19 +788,18 @@ test.describe.serial(
                         flowFailed
                     ) {
 
-                        const expectedScenarios = [
+                        console.log('');
+                        console.log(
+                            '======================================================',
+                        );
 
-                            'Login',
-                            'Create Arbitration Claim',
-                            'Assign Case Managers',
-                            'Add Parties',
-                            'Respond to Proceedings',
-                            'Add Message Tags',
-                            'Change and Verify Status',
-                            'Schedule and Verify Meeting',
-                            'Apply More Filter - Organization',
+                        console.log(
+                            'FLOW FAILED - MARKING REMAINING SCENARIOS AS SKIPPED',
+                        );
 
-                        ];
+                        console.log(
+                            '======================================================',
+                        );
 
 
                         for (
@@ -617,7 +810,8 @@ test.describe.serial(
                             const alreadyRecorded =
                                 scenarios.some(
                                     scenario =>
-                                        scenario.name === scenarioName,
+                                        scenario.name ===
+                                        scenarioName,
                                 );
 
 
@@ -652,8 +846,16 @@ test.describe.serial(
                     );
 
 
+                    // --------------------------------------------------
+                    // Logout only if login was successfully completed.
+                    //
+                    // IMPORTANT:
+                    // This is the SAME page/session.
+                    // No new browser or login is created.
+                    // --------------------------------------------------
+
                     if (
-                        arbitrationClaimDisplayName
+                        loginCompleted
                     ) {
 
                         try {
@@ -782,6 +984,16 @@ test.describe.serial(
                         console.log(
                             `${scenario.status} - ${scenario.name}`,
                         );
+
+
+                        if (
+                            scenario.error
+                        ) {
+
+                            console.log(
+                                `  Error: ${scenario.error}`,
+                            );
+                        }
                     }
 
 
@@ -839,6 +1051,24 @@ test.describe.serial(
                         '======================================================',
                     );
 
+
+                    if (
+                        flowFailed
+                    ) {
+
+                        console.log(
+                            'Result: FAILED',
+                        );
+
+                    }
+                    else {
+
+                        console.log(
+                            'Result: PASSED',
+                        );
+                    }
+
+
                     console.log(
                         'Browser session has been logged out.',
                     );
@@ -850,6 +1080,7 @@ test.describe.serial(
                     console.log(
                         '======================================================',
                     );
+
                 }
 
             },

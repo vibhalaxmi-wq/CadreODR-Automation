@@ -3,15 +3,16 @@ import {
 } from '@playwright/test';
 
 import {
-    applyMoreFilter as applyMoreFilterAction,
+    applyDisplayNameFilter as applyDisplayNameFilterAction,
 } from '../../actions/MoreFilterActions';
 
 // ==========================================================
-// APPLY MORE FILTER SCENARIO
+// DISPLAY NAME FILTER SCENARIO
 // ==========================================================
 
-export async function applyMoreFilter(
+export async function displayNameFilter(
     page: Page,
+    displayName: string,
 ): Promise<void> {
 
     console.log('');
@@ -19,10 +20,14 @@ export async function applyMoreFilter(
         '======================================================',
     );
     console.log(
-        'APPLY MORE FILTER SCENARIO',
+        'DISPLAY NAME FILTER SCENARIO',
     );
     console.log(
         '======================================================',
+    );
+
+    console.log(
+        `Display Name received: ${displayName}`,
     );
 
     console.log(
@@ -33,14 +38,25 @@ export async function applyMoreFilter(
         'Using existing logged-in browser session.',
     );
 
-    await applyMoreFilterAction(page);
+    // ======================================================
+    // APPLY DISPLAY NAME FILTER
+    // ======================================================
+
+    await applyDisplayNameFilterAction(
+        page,
+        displayName,
+    );
+
+    // ======================================================
+    // COMPLETED
+    // ======================================================
 
     console.log('');
     console.log(
         '======================================================',
     );
     console.log(
-        'MORE FILTER SCENARIO COMPLETED SUCCESSFULLY',
+        'DISPLAY NAME FILTER SCENARIO COMPLETED SUCCESSFULLY',
     );
     console.log(
         `Current URL: ${page.url()}`,
