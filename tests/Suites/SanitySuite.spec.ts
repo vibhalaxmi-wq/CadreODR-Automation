@@ -38,7 +38,6 @@ import {
     respondToProceedings,
 } from '../../scenarios/Proceedings/respondToProceedings';
 
-
 // ==========================================================
 // MESSAGE TAGS
 // ==========================================================
@@ -82,6 +81,24 @@ import {
 import {
     displayNameFilter,
 } from '../../scenarios/MoreFilters/displayNameFilter';
+
+
+// ==========================================================
+// MORE FILTERS - CONTRACT ID
+// ==========================================================
+
+import {
+    contactIdFilter,
+} from '../../scenarios/MoreFilters/contactIdFilter';
+
+
+// ==========================================================
+// MORE FILTERS - STATUS
+// ==========================================================
+
+import {
+    statusFilter,
+} from '../../scenarios/MoreFilters/statusFilter';
 
 
 // ==========================================================
@@ -214,6 +231,13 @@ test.describe.serial(
 
                     'Apply More Filter - Display Name',
 
+                    'Apply More Filter - Contract ID',
+
+                    // ==================================================
+                    // STATUS FILTER ADDED
+                    // ==================================================
+
+                    'Apply More Filter - Status',
                 ];
 
 
@@ -224,6 +248,7 @@ test.describe.serial(
                     // ==================================================
 
                     console.log('');
+
                     console.log(
                         '======================================================',
                     );
@@ -240,18 +265,9 @@ test.describe.serial(
                     // ==================================================
                     // STEP 01 - LOGIN + CREATE CLAIM
                     // ==================================================
-                    //
-                    // IMPORTANT:
-                    // Login is handled INSIDE
-                    // createArbitrationClaimScenario().
-                    //
-                    // The Sanity Suite does NOT call validLogin()
-                    // separately.
-                    //
-                    // This keeps ONE LOGIN + ONE PAGE + ONE BROWSER.
-                    // ==================================================
 
                     console.log('');
+
                     console.log(
                         'STEP 01 - LOGIN + CREATE ARBITRATION CLAIM',
                     );
@@ -262,6 +278,7 @@ test.describe.serial(
                         console.log(
                             'Calling createArbitrationClaimScenario()...',
                         );
+
 
                         console.log(
                             'Login will be performed inside the Create Claim scenario.',
@@ -284,12 +301,6 @@ test.describe.serial(
                             );
                         }
 
-
-                        // --------------------------------------------------
-                        // Create Claim scenario has successfully completed.
-                        // Therefore login + claim creation are considered
-                        // successful.
-                        // --------------------------------------------------
 
                         loginCompleted = true;
 
@@ -318,15 +329,6 @@ test.describe.serial(
                         error
                     ) {
 
-                        // --------------------------------------------------
-                        // Because login happens inside createArbitrationClaim
-                        // we cannot separately know whether login or claim
-                        // creation failed.
-                        //
-                        // Therefore both are recorded as failed, matching
-                        // your existing working reporting approach.
-                        // --------------------------------------------------
-
                         recordFailed(
                             'Login',
                             error,
@@ -353,6 +355,7 @@ test.describe.serial(
                     try {
 
                         console.log('');
+
                         console.log(
                             'STEP 02 - ASSIGN CASE MANAGERS',
                         );
@@ -398,6 +401,7 @@ test.describe.serial(
                     try {
 
                         console.log('');
+
                         console.log(
                             'STEP 03 - ADD PARTIES',
                         );
@@ -442,6 +446,7 @@ test.describe.serial(
                     try {
 
                         console.log('');
+
                         console.log(
                             'STEP 04 - RESPOND TO PROCEEDINGS',
                         );
@@ -486,6 +491,7 @@ test.describe.serial(
                     try {
 
                         console.log('');
+
                         console.log(
                             'STEP 05 - ADD MESSAGE TAGS',
                         );
@@ -530,6 +536,7 @@ test.describe.serial(
                     try {
 
                         console.log('');
+
                         console.log(
                             'STEP 06 - CHANGE AND VERIFY STATUS',
                         );
@@ -574,6 +581,7 @@ test.describe.serial(
                     try {
 
                         console.log('');
+
                         console.log(
                             'STEP 07 - SCHEDULE AND VERIFY MEETING',
                         );
@@ -618,13 +626,16 @@ test.describe.serial(
                     try {
 
                         console.log('');
+
                         console.log(
                             '======================================================',
                         );
 
+
                         console.log(
                             'STEP 08 - ALL CLAIMS + LIST VIEW + MORE FILTERS',
                         );
+
 
                         console.log(
                             '======================================================',
@@ -636,6 +647,7 @@ test.describe.serial(
                         // ==================================================
 
                         console.log('');
+
                         console.log(
                             'STEP 08.1 - ORGANIZATION FILTER',
                         );
@@ -652,7 +664,7 @@ test.describe.serial(
 
 
                         console.log(
-                            'All Claims → List View → Organization filter applied and verified successfully.',
+                            'Organization filter applied and verified successfully.',
                         );
 
 
@@ -661,13 +673,16 @@ test.describe.serial(
                         // ==================================================
 
                         console.log('');
+
                         console.log(
                             '======================================================',
                         );
 
+
                         console.log(
                             'STEP 08.2 - DISPLAY NAME FILTER',
                         );
+
 
                         console.log(
                             '======================================================',
@@ -705,15 +720,86 @@ test.describe.serial(
                             'Display Name filter applied and verified successfully.',
                         );
 
+
+                        // ==================================================
+                        // STEP 08.3 - CONTRACT ID FILTER
+                        // ==================================================
+
+                        console.log('');
+
+                        console.log(
+                            '======================================================',
+                        );
+
+
+                        console.log(
+                            'STEP 08.3 - CONTRACT ID FILTER',
+                        );
+
+
+                        console.log(
+                            '======================================================',
+                        );
+
+
+                        await contactIdFilter(
+                            page,
+                        );
+
+
+                        recordPassed(
+                            'Apply More Filter - Contract ID',
+                        );
+
+
+                        console.log(
+                            'Contract ID filter applied and verified successfully.',
+                        );
+
+
+                        // ==================================================
+                        // STEP 08.4 - STATUS FILTER
+                        // ==================================================
+
+                        console.log('');
+
+                        console.log(
+                            '======================================================',
+                        );
+
+
+                        console.log(
+                            'STEP 08.4 - STATUS FILTER',
+                        );
+
+
+                        console.log(
+                            '======================================================',
+                        );
+
+
+                        await statusFilter(
+                            page,
+                        );
+
+
+                        recordPassed(
+                            'Apply More Filter - Status',
+                        );
+
+
+                        console.log(
+                            'Status filter applied and verified successfully.',
+                        );
+
                     }
                     catch (
                         error
                     ) {
 
-                        // --------------------------------------------------
-                        // Organization may already have passed.
-                        // Therefore identify which filter failed.
-                        // --------------------------------------------------
+                        // ==================================================
+                        // CHECK ORGANIZATION FILTER
+                        // ==================================================
 
                         const organizationRecorded =
                             scenarios.some(
@@ -723,11 +809,39 @@ test.describe.serial(
                             );
 
 
+                        // ==================================================
+                        // CHECK DISPLAY NAME FILTER
+                        // ==================================================
+
                         const displayNameRecorded =
                             scenarios.some(
                                 scenario =>
                                     scenario.name ===
                                     'Apply More Filter - Display Name',
+                            );
+
+
+                        // ==================================================
+                        // CHECK CONTRACT ID FILTER
+                        // ==================================================
+
+                        const contractIdRecorded =
+                            scenarios.some(
+                                scenario =>
+                                    scenario.name ===
+                                    'Apply More Filter - Contract ID',
+                            );
+
+
+                        // ==================================================
+                        // CHECK STATUS FILTER
+                        // ==================================================
+
+                        const statusRecorded =
+                            scenarios.some(
+                                scenario =>
+                                    scenario.name ===
+                                    'Apply More Filter - Status',
                             );
 
 
@@ -751,6 +865,25 @@ test.describe.serial(
                             );
 
                         }
+                        else if (
+                            !contractIdRecorded
+                        ) {
+
+                            recordFailed(
+                                'Apply More Filter - Contract ID',
+                                error,
+                            );
+
+                        }
+                        else if (
+                            !statusRecorded
+                        ) {
+
+                            recordFailed(
+                                'Apply More Filter - Status',
+                                error,
+                            );
+                        }
 
 
                         flowFailed = true;
@@ -765,13 +898,16 @@ test.describe.serial(
                     // ==================================================
 
                     console.log('');
+
                     console.log(
                         '======================================================',
                     );
 
+
                     console.log(
                         'COMPLETE ARBITRATION E2E FLOW PASSED',
                     );
+
 
                     console.log(
                         '======================================================',
@@ -789,13 +925,16 @@ test.describe.serial(
                     ) {
 
                         console.log('');
+
                         console.log(
                             '======================================================',
                         );
 
+
                         console.log(
                             'FLOW FAILED - MARKING REMAINING SCENARIOS AS SKIPPED',
                         );
+
 
                         console.log(
                             '======================================================',
@@ -833,26 +972,21 @@ test.describe.serial(
                     // ==================================================
 
                     console.log('');
+
                     console.log(
                         '======================================================',
                     );
+
 
                     console.log(
                         'STEP 09 - LOGOUT',
                     );
 
+
                     console.log(
                         '======================================================',
                     );
 
-
-                    // --------------------------------------------------
-                    // Logout only if login was successfully completed.
-                    //
-                    // IMPORTANT:
-                    // This is the SAME page/session.
-                    // No new browser or login is created.
-                    // --------------------------------------------------
 
                     if (
                         loginCompleted
@@ -911,13 +1045,16 @@ test.describe.serial(
                     // ==================================================
 
                     console.log('');
+
                     console.log(
                         '======================================================',
                     );
 
+
                     console.log(
                         'PREPARING SANITY E2E REPORT',
                     );
+
 
                     console.log(
                         '======================================================',
@@ -953,13 +1090,16 @@ test.describe.serial(
                         `Total Scenarios: ${totalScenarios}`,
                     );
 
+
                     console.log(
                         `Passed Scenarios: ${passedScenarios}`,
                     );
 
+
                     console.log(
                         `Failed Scenarios: ${failedScenarios}`,
                     );
+
 
                     console.log(
                         `Skipped Scenarios: ${skippedScenarios}`,
@@ -971,6 +1111,7 @@ test.describe.serial(
                     // ==================================================
 
                     console.log('');
+
                     console.log(
                         'SCENARIO RESULTS',
                     );
@@ -1014,7 +1155,6 @@ test.describe.serial(
                             skippedScenarios,
 
                             scenarios,
-
                         });
 
 
@@ -1039,13 +1179,16 @@ test.describe.serial(
                     // ==================================================
 
                     console.log('');
+
                     console.log(
                         '======================================================',
                     );
 
+
                     console.log(
                         'SANITY E2E EXECUTION COMPLETED',
                     );
+
 
                     console.log(
                         '======================================================',
@@ -1073,18 +1216,17 @@ test.describe.serial(
                         'Browser session has been logged out.',
                     );
 
+
                     console.log(
                         'Playwright will now close the browser automatically.',
                     );
 
+
                     console.log(
                         '======================================================',
                     );
-
                 }
-
             },
         );
-
     },
 );

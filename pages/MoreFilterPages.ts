@@ -19,15 +19,10 @@ export class MoreFilterPages {
     }
 
     // ==========================================================
-    // STEP 1 - OPEN ALL CLAIMS
+    // OPEN ALL CLAIMS
     // ==========================================================
 
     async openAllClaims(): Promise<void> {
-
-        console.log('');
-        console.log(
-            'STEP 1 - NAVIGATE TO ALL CLAIMS',
-        );
 
         const allClaims =
             this.locators.allClaimsButton;
@@ -41,22 +36,13 @@ export class MoreFilterPages {
         await allClaims.click();
 
         await this.page.waitForTimeout(1000);
-
-        console.log(
-            'All Claims opened successfully.',
-        );
     }
 
     // ==========================================================
-    // STEP 2 - SWITCH TILE VIEW TO LIST VIEW
+    // SWITCH TO LIST VIEW
     // ==========================================================
 
     async switchToListView(): Promise<void> {
-
-        console.log('');
-        console.log(
-            'STEP 2 - SWITCH FROM TILE VIEW TO LIST VIEW',
-        );
 
         const listView =
             this.locators.listViewButton;
@@ -70,22 +56,13 @@ export class MoreFilterPages {
         await listView.click();
 
         await this.page.waitForTimeout(1000);
-
-        console.log(
-            'List view selected successfully.',
-        );
     }
 
     // ==========================================================
-    // STEP 3 - OPEN MORE FILTERS
+    // OPEN MORE FILTERS
     // ==========================================================
 
     async openMoreFilters(): Promise<void> {
-
-        console.log('');
-        console.log(
-            'STEP 3 - OPEN MORE FILTERS',
-        );
 
         const moreFilters =
             this.locators.moreFiltersTab;
@@ -99,22 +76,13 @@ export class MoreFilterPages {
         await moreFilters.click();
 
         await this.page.waitForTimeout(1000);
-
-        console.log(
-            'More Filters opened successfully.',
-        );
     }
 
     // ==========================================================
-    // STEP 4 - OPEN FILTER DROPDOWN
+    // OPEN ORGANIZATION FILTER DROPDOWN
     // ==========================================================
 
     async openOrganizationFilterDropdown(): Promise<void> {
-
-        console.log('');
-        console.log(
-            'STEP 4 - OPEN FILTER DROPDOWN',
-        );
 
         const filterDropdown =
             this.locators.organizationFilterDropdown;
@@ -128,22 +96,13 @@ export class MoreFilterPages {
         await filterDropdown.click();
 
         await this.page.waitForTimeout(700);
-
-        console.log(
-            'Filter dropdown opened successfully.',
-        );
     }
 
     // ==========================================================
-    // STEP 5 - SELECT ORGANIZATION
+    // SELECT ORGANIZATION FILTER
     // ==========================================================
 
     async selectOrganizationFilter(): Promise<void> {
-
-        console.log('');
-        console.log(
-            'STEP 5 - SELECT ORGANIZATION FILTER',
-        );
 
         const organizationOption =
             this.locators.organizationFilterOption;
@@ -157,22 +116,13 @@ export class MoreFilterPages {
         await organizationOption.click();
 
         await this.page.waitForTimeout(700);
-
-        console.log(
-            'Organization filter selected successfully.',
-        );
     }
 
     // ==========================================================
-    // STEP 6 - OPEN ORGANIZATION VALUE CONTROL
+    // OPEN ORGANIZATION VALUE CONTROL
     // ==========================================================
 
     async openOrganizationValueControl(): Promise<void> {
-
-        console.log('');
-        console.log(
-            'STEP 6 - OPEN ORGANIZATION VALUE CONTROL',
-        );
 
         const organizationValue =
             this.locators.organizationValueControl;
@@ -186,22 +136,13 @@ export class MoreFilterPages {
         await organizationValue.click();
 
         await this.page.waitForTimeout(700);
-
-        console.log(
-            'Organization value control opened successfully.',
-        );
     }
 
     // ==========================================================
-    // STEP 7 - APPLY FILTER
+    // APPLY FILTER
     // ==========================================================
 
     async applyFilter(): Promise<void> {
-
-        console.log('');
-        console.log(
-            'STEP 7 - APPLY FILTER',
-        );
 
         const applyButton =
             this.locators.applyButton;
@@ -220,29 +161,16 @@ export class MoreFilterPages {
 
         await applyButton.scrollIntoViewIfNeeded();
 
-        console.log(
-            'Apply button is visible and enabled.',
-        );
-
         await applyButton.click();
-
-        console.log(
-            'Apply button clicked successfully.',
-        );
 
         await this.page.waitForTimeout(1500);
     }
 
     // ==========================================================
-    // STEP 8 - VERIFY FILTER RESULT
+    // VERIFY ORGANIZATION FILTER
     // ==========================================================
 
     async verifyOrganizationFilter(): Promise<void> {
-
-        console.log('');
-        console.log(
-            'STEP 8 - VERIFY ORGANIZATION FILTER RESULT',
-        );
 
         const result =
             this.locators.organizationFilterResult;
@@ -252,13 +180,268 @@ export class MoreFilterPages {
         ).toBeVisible({
             timeout: 15000,
         });
+    }
 
-        console.log(
-            'Organization filter applied successfully.',
-        );
+    // ==========================================================
+    // REMOVE PREVIOUS FILTER
+    // ==========================================================
 
-        console.log(
-            'Verified filter result: 1 Orgs',
+    async removePreviousFilter(): Promise<void> {
+
+        const removeFilter =
+            this.locators.removePreviousFilterButton;
+
+        await expect(
+            removeFilter,
+        ).toBeVisible({
+            timeout: 15000,
+        });
+
+        await removeFilter.click();
+
+        await this.page.waitForTimeout(700);
+    }
+
+    // ==========================================================
+    // CONTRACT ID - OPEN MORE FILTERS
+    // ==========================================================
+
+    async openMoreFiltersForContractId(): Promise<void> {
+
+        const moreFilters =
+            this.locators.moreFiltersTab;
+
+        await expect(
+            moreFilters,
+        ).toBeVisible({
+            timeout: 15000,
+        });
+
+        await moreFilters.click();
+
+        await this.page.waitForTimeout(700);
+    }
+
+    // ==========================================================
+    // CONTRACT ID - ENTER VALUE
+    // ==========================================================
+
+    async enterContractId(
+        contractId: string,
+    ): Promise<void> {
+
+        const contractIdTextbox =
+            this.locators.contractIdTextbox;
+
+        await expect(
+            contractIdTextbox,
+        ).toBeVisible({
+            timeout: 15000,
+        });
+
+        await contractIdTextbox.click();
+
+        await contractIdTextbox.fill(
+            contractId,
         );
+    }
+
+    // ==========================================================
+    // CONTRACT ID - APPLY
+    // ==========================================================
+
+    async applyContractIdFilter(): Promise<void> {
+
+        const applyButton =
+            this.locators.applyButton;
+
+        await expect(
+            applyButton,
+        ).toBeVisible({
+            timeout: 15000,
+        });
+
+        await expect(
+            applyButton,
+        ).toBeEnabled({
+            timeout: 15000,
+        });
+
+        await applyButton.scrollIntoViewIfNeeded();
+
+        await applyButton.click();
+
+        await this.page.waitForTimeout(1500);
+    }
+
+    // ==========================================================
+    // CONTRACT ID - VERIFY
+    // ==========================================================
+
+    async verifyContractIdFilter(): Promise<void> {
+
+        const result =
+            this.locators.contractIdFilterResult;
+
+        await expect(
+            result,
+        ).toBeVisible({
+            timeout: 15000,
+        });
+    }
+
+    // ==========================================================
+    // STATUS - REMOVE PREVIOUS FILTER
+    // ==========================================================
+
+    async removePreviousFilterForStatus(): Promise<void> {
+
+        const removeFilter =
+            this.locators.removePreviousFilterButton;
+
+        await expect(
+            removeFilter,
+        ).toBeVisible({
+            timeout: 15000,
+        });
+
+        await removeFilter.click();
+
+        await this.page.waitForTimeout(700);
+    }
+
+    // ==========================================================
+    // STATUS - OPEN MORE FILTERS
+    // ==========================================================
+
+    async openMoreFiltersForStatus(): Promise<void> {
+
+        const moreFilters =
+            this.locators.moreFiltersTab;
+
+        await expect(
+            moreFilters,
+        ).toBeVisible({
+            timeout: 15000,
+        });
+
+        await moreFilters.click();
+
+        await this.page.waitForTimeout(700);
+    }
+
+    // ==========================================================
+    // STATUS - OPEN VALUE CONTROL
+    // ==========================================================
+
+    async openStatusValueControl(): Promise<void> {
+
+        const statusValue =
+            this.locators.statusValueControl;
+
+        await expect(
+            statusValue,
+        ).toBeVisible({
+            timeout: 15000,
+        });
+
+        await statusValue.click();
+
+        await this.page.waitForTimeout(700);
+    }
+
+    // ==========================================================
+    // STATUS - SEARCH
+    // ==========================================================
+
+    async searchStatus(
+        status: string,
+    ): Promise<void> {
+
+        const searchOptions =
+            this.locators.statusSearchOptions;
+
+        await expect(
+            searchOptions,
+        ).toBeVisible({
+            timeout: 15000,
+        });
+
+        await searchOptions.fill(
+            status,
+        );
+    }
+
+    // ==========================================================
+    // STATUS - SELECT
+    // ==========================================================
+
+    async selectStatus(): Promise<void> {
+
+        const statusOption =
+            this.locators.statusFilterOption;
+
+        await expect(
+            statusOption,
+        ).toBeVisible({
+            timeout: 15000,
+        });
+
+        await statusOption.click();
+    }
+
+    // ==========================================================
+    // STATUS - CLOSE DROPDOWN
+    // ==========================================================
+
+    async closeStatusDropdown(): Promise<void> {
+
+        await this.locators.statusSearchOptions.press(
+            'Escape',
+        );
+    }
+
+    // ==========================================================
+    // STATUS - APPLY
+    // ==========================================================
+
+    async applyStatusFilter(): Promise<void> {
+
+        const applyButton =
+            this.locators.applyButton;
+
+        await expect(
+            applyButton,
+        ).toBeVisible({
+            timeout: 15000,
+        });
+
+        await expect(
+            applyButton,
+        ).toBeEnabled({
+            timeout: 15000,
+        });
+
+        await applyButton.scrollIntoViewIfNeeded();
+
+        await applyButton.click();
+
+        await this.page.waitForTimeout(1500);
+    }
+
+    // ==========================================================
+    // STATUS - VERIFY
+    // ==========================================================
+
+    async verifyStatusFilter(): Promise<void> {
+
+        const result =
+            this.locators.statusFilterResult;
+
+        await expect(
+            result,
+        ).toBeVisible({
+            timeout: 15000,
+        });
     }
 }

@@ -95,6 +95,44 @@ export class MoreFilterLocators {
     }
 
     // ==========================================================
+    // CONTRACT ID FILTER
+    // ==========================================================
+
+    get contractIdTextbox(): Locator {
+        return this.page.getByRole(
+            'textbox',
+            {
+                name: 'e.g., ID1,ID2 (Max 50)',
+            },
+        );
+    }
+
+    // ==========================================================
+    // STATUS FILTER
+    // ==========================================================
+
+    get statusValueControl(): Locator {
+        return this.page.locator(
+            'div:nth-child(4) > ._filter-value-input_1fa0f_179 > ._full-width-wrapper_1fa0f_208 > ._outer-container_uvsvt_1 > ._container_uvsvt_10 > ._value_uvsvt_51',
+        );
+    }
+
+    get statusSearchOptions(): Locator {
+        return this.page.getByRole(
+            'combobox',
+            {
+                name: 'Search options',
+            },
+        );
+    }
+
+    get statusFilterOption(): Locator {
+        return this.page.locator(
+            '[id$="-option-0"] > div > img',
+        );
+    }
+
+    // ==========================================================
     // APPLY BUTTON
     // ==========================================================
 
@@ -134,5 +172,25 @@ export class MoreFilterLocators {
                 exact: false,
             },
         );
+    }
+
+    // ==========================================================
+    // CONTRACT ID FILTER VERIFICATION
+    // ==========================================================
+
+    get contractIdFilterResult(): Locator {
+        return this.page.getByText(
+            'Loan',
+        ).nth(1);
+    }
+
+    // ==========================================================
+    // STATUS FILTER VERIFICATION
+    // ==========================================================
+
+    get statusFilterResult(): Locator {
+        return this.page.getByText(
+            'On Hold',
+        ).first();
     }
 }
