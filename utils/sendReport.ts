@@ -30,7 +30,8 @@ const TEST_RESULTS_PATH = path.resolve(
 // ==========================================================
 
 const RECIPIENT1 =
-    'tech_team@thecadre.in';
+    //'tech_team@thecadre.in';
+    'vibha.laxmi+admin@thecadre.in'
 
 const SENDER =
     'vibha.laxmi@thecadre.in';

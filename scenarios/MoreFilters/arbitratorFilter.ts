@@ -3,7 +3,7 @@ import {
 } from '@playwright/test';
 
 import {
-    applyCaseOfficerFilter,
+    applyArbitratorFilter,
 } from '../../actions/MoreFilterActions';
 
 import {
@@ -12,10 +12,10 @@ import {
 
 
 // ==========================================================
-// CASE OFFICER FILTER SCENARIO
+// ARBITRATOR FILTER SCENARIO
 // ==========================================================
 
-export async function caseOfficerFilter(
+export async function arbitratorFilter(
     page: Page,
 ): Promise<void> {
 
@@ -24,30 +24,27 @@ export async function caseOfficerFilter(
         '======================================================',
     );
     console.log(
-        'CASE OFFICER FILTER SCENARIO',
+        'ARBITRATOR FILTER SCENARIO',
     );
     console.log(
         '======================================================',
     );
 
-
-    await applyCaseOfficerFilter(
+    await applyArbitratorFilter(
         page,
-        moreFilterData.caseOfficer.value,
+        moreFilterData.arbitrator.value,
     );
-
 
     console.log(
-        'Case Officer filter scenario completed successfully.',
+        'Arbitrator filter scenario completed successfully.',
     );
-
 
     console.log('');
     console.log(
         '======================================================',
     );
     console.log(
-        'CASE OFFICER FILTER SCENARIO COMPLETED',
+        'ARBITRATOR FILTER SCENARIO COMPLETED',
     );
     console.log(
         '======================================================',

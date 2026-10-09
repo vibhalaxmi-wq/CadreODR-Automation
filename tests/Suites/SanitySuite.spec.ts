@@ -38,6 +38,7 @@ import {
     respondToProceedings,
 } from '../../scenarios/Proceedings/respondToProceedings';
 
+
 // ==========================================================
 // MESSAGE TAGS
 // ==========================================================
@@ -102,6 +103,42 @@ import {
 
 
 // ==========================================================
+// MORE FILTERS - CASE OFFICER
+// ==========================================================
+
+import {
+    caseOfficerFilter,
+} from '../../scenarios/MoreFilters/caseOfficerFilter';
+
+
+// ==========================================================
+// MORE FILTERS - ARBITRATOR
+// ==========================================================
+
+import {
+    arbitratorFilter,
+} from '../../scenarios/MoreFilters/arbitratorFilter';
+
+
+// ==========================================================
+// MORE FILTERS - LOT ID
+// ==========================================================
+
+import {
+    lotFilter,
+} from '../../scenarios/MoreFilters/lotFilter';
+
+
+// ==========================================================
+// MORE FILTERS - DISPUTE TYPE
+// ==========================================================
+
+import {
+    disputeTypeFilter,
+} from '../../scenarios/MoreFilters/disputeTypeFilter';
+
+
+// ==========================================================
 // LOGOUT
 // ==========================================================
 
@@ -128,10 +165,7 @@ test.describe.serial(
     'Sanity Suite',
     () => {
 
-        test.setTimeout(
-            600000,
-        );
-
+        test.setTimeout(600000);
 
         test(
             '01 - Complete Arbitration Claim E2E Flow',
@@ -143,23 +177,19 @@ test.describe.serial(
 
                 const scenarios: ScenarioResult[] = [];
 
-
                 const recordPassed = (
                     name: string,
                 ): void => {
-
                     scenarios.push({
                         name,
                         status: 'PASSED',
                     });
                 };
 
-
                 const recordFailed = (
                     name: string,
                     error: unknown,
                 ): void => {
-
                     scenarios.push({
                         name,
                         status: 'FAILED',
@@ -170,12 +200,10 @@ test.describe.serial(
                     });
                 };
 
-
                 const recordSkipped = (
                     name: string,
                     reason: string,
                 ): void => {
-
                     scenarios.push({
                         name,
                         status: 'SKIPPED',
@@ -210,34 +238,22 @@ test.describe.serial(
                 // ==================================================
 
                 const expectedScenarios = [
-
                     'Login',
-
                     'Create Arbitration Claim',
-
                     'Assign Case Managers',
-
                     'Add Parties',
-
                     'Respond to Proceedings',
-
                     'Add Message Tags',
-
                     'Change and Verify Status',
-
                     'Schedule and Verify Meeting',
-
                     'Apply More Filter - Organization',
-
                     'Apply More Filter - Display Name',
-
                     'Apply More Filter - Contract ID',
-
-                    // ==================================================
-                    // STATUS FILTER ADDED
-                    // ==================================================
-
                     'Apply More Filter - Status',
+                    'Apply More Filter - Case Officer',
+                    'Apply More Filter - Arbitrator',
+                    'Apply More Filter - Lot ID',
+                    'Apply More Filter - Dispute Type',
                 ];
 
 
@@ -248,15 +264,12 @@ test.describe.serial(
                     // ==================================================
 
                     console.log('');
-
                     console.log(
                         '======================================================',
                     );
-
                     console.log(
                         'STARTING COMPLETE ARBITRATION E2E FLOW',
                     );
-
                     console.log(
                         '======================================================',
                     );
@@ -267,11 +280,9 @@ test.describe.serial(
                     // ==================================================
 
                     console.log('');
-
                     console.log(
                         'STEP 01 - LOGIN + CREATE ARBITRATION CLAIM',
                     );
-
 
                     try {
 
@@ -279,70 +290,43 @@ test.describe.serial(
                             'Calling createArbitrationClaimScenario()...',
                         );
 
-
                         console.log(
                             'Login will be performed inside the Create Claim scenario.',
                         );
 
-
                         arbitrationClaimDisplayName =
-                            await createArbitrationClaimScenario(
-                                page,
-                            );
-
+                            await createArbitrationClaimScenario(page);
 
                         if (
                             !arbitrationClaimDisplayName ||
                             arbitrationClaimDisplayName.trim() === ''
                         ) {
-
                             throw new Error(
                                 'Arbitration claim display name was not returned.',
                             );
                         }
 
-
                         loginCompleted = true;
 
+                        recordPassed('Login');
+                        recordPassed('Create Arbitration Claim');
 
-                        recordPassed(
-                            'Login',
-                        );
-
-
-                        recordPassed(
-                            'Create Arbitration Claim',
-                        );
-
-
-                        console.log(
-                            'Login scenario passed.',
-                        );
-
+                        console.log('Login scenario passed.');
 
                         console.log(
                             `Created Claim: ${arbitrationClaimDisplayName}`,
                         );
 
-                    }
-                    catch (
-                        error
-                    ) {
+                    } catch (error) {
 
-                        recordFailed(
-                            'Login',
-                            error,
-                        );
-
+                        recordFailed('Login', error);
 
                         recordFailed(
                             'Create Arbitration Claim',
                             error,
                         );
 
-
                         flowFailed = true;
-
 
                         throw error;
                     }
@@ -355,40 +339,27 @@ test.describe.serial(
                     try {
 
                         console.log('');
-
-                        console.log(
-                            'STEP 02 - ASSIGN CASE MANAGERS',
-                        );
-
+                        console.log('STEP 02 - ASSIGN CASE MANAGERS');
 
                         await assignCaseManagersScenario(
                             page,
                             arbitrationClaimDisplayName,
                         );
 
-
-                        recordPassed(
-                            'Assign Case Managers',
-                        );
-
+                        recordPassed('Assign Case Managers');
 
                         console.log(
                             'Case managers assigned successfully.',
                         );
 
-                    }
-                    catch (
-                        error
-                    ) {
+                    } catch (error) {
 
                         recordFailed(
                             'Assign Case Managers',
                             error,
                         );
 
-
                         flowFailed = true;
-
 
                         throw error;
                     }
@@ -401,39 +372,21 @@ test.describe.serial(
                     try {
 
                         console.log('');
+                        console.log('STEP 03 - ADD PARTIES');
 
-                        console.log(
-                            'STEP 03 - ADD PARTIES',
-                        );
+                        await addPartiesToCurrentClaim(page);
 
-
-                        await addPartiesToCurrentClaim(
-                            page,
-                        );
-
-
-                        recordPassed(
-                            'Add Parties',
-                        );
-
+                        recordPassed('Add Parties');
 
                         console.log(
                             'All parties added successfully.',
                         );
 
-                    }
-                    catch (
-                        error
-                    ) {
+                    } catch (error) {
 
-                        recordFailed(
-                            'Add Parties',
-                            error,
-                        );
-
+                        recordFailed('Add Parties', error);
 
                         flowFailed = true;
-
 
                         throw error;
                     }
@@ -446,39 +399,24 @@ test.describe.serial(
                     try {
 
                         console.log('');
+                        console.log('STEP 04 - RESPOND TO PROCEEDINGS');
 
-                        console.log(
-                            'STEP 04 - RESPOND TO PROCEEDINGS',
-                        );
+                        await respondToProceedings(page);
 
-
-                        await respondToProceedings(
-                            page,
-                        );
-
-
-                        recordPassed(
-                            'Respond to Proceedings',
-                        );
-
+                        recordPassed('Respond to Proceedings');
 
                         console.log(
                             'Proceedings response completed successfully.',
                         );
 
-                    }
-                    catch (
-                        error
-                    ) {
+                    } catch (error) {
 
                         recordFailed(
                             'Respond to Proceedings',
                             error,
                         );
 
-
                         flowFailed = true;
-
 
                         throw error;
                     }
@@ -491,39 +429,21 @@ test.describe.serial(
                     try {
 
                         console.log('');
+                        console.log('STEP 05 - ADD MESSAGE TAGS');
 
-                        console.log(
-                            'STEP 05 - ADD MESSAGE TAGS',
-                        );
+                        await messageTagsScenario(page);
 
-
-                        await messageTagsScenario(
-                            page,
-                        );
-
-
-                        recordPassed(
-                            'Add Message Tags',
-                        );
-
+                        recordPassed('Add Message Tags');
 
                         console.log(
                             'Message tags added successfully.',
                         );
 
-                    }
-                    catch (
-                        error
-                    ) {
+                    } catch (error) {
 
-                        recordFailed(
-                            'Add Message Tags',
-                            error,
-                        );
-
+                        recordFailed('Add Message Tags', error);
 
                         flowFailed = true;
-
 
                         throw error;
                     }
@@ -536,39 +456,28 @@ test.describe.serial(
                     try {
 
                         console.log('');
-
                         console.log(
                             'STEP 06 - CHANGE AND VERIFY STATUS',
                         );
 
-
-                        await statusChange(
-                            page,
-                        );
-
+                        await statusChange(page);
 
                         recordPassed(
                             'Change and Verify Status',
                         );
 
-
                         console.log(
                             'Status change flow completed successfully.',
                         );
 
-                    }
-                    catch (
-                        error
-                    ) {
+                    } catch (error) {
 
                         recordFailed(
                             'Change and Verify Status',
                             error,
                         );
 
-
                         flowFailed = true;
-
 
                         throw error;
                     }
@@ -581,39 +490,28 @@ test.describe.serial(
                     try {
 
                         console.log('');
-
                         console.log(
                             'STEP 07 - SCHEDULE AND VERIFY MEETING',
                         );
 
-
-                        await scheduleMeetingScenario(
-                            page,
-                        );
-
+                        await scheduleMeetingScenario(page);
 
                         recordPassed(
                             'Schedule and Verify Meeting',
                         );
 
-
                         console.log(
                             'Meeting scheduled and verified successfully.',
                         );
 
-                    }
-                    catch (
-                        error
-                    ) {
+                    } catch (error) {
 
                         recordFailed(
                             'Schedule and Verify Meeting',
                             error,
                         );
 
-
                         flowFailed = true;
-
 
                         throw error;
                     }
@@ -626,180 +524,197 @@ test.describe.serial(
                     try {
 
                         console.log('');
-
                         console.log(
                             '======================================================',
                         );
-
-
                         console.log(
                             'STEP 08 - ALL CLAIMS + LIST VIEW + MORE FILTERS',
                         );
-
-
                         console.log(
                             '======================================================',
                         );
 
 
-                        // ==================================================
+                        // ==============================================
                         // STEP 08.1 - ORGANIZATION FILTER
-                        // ==================================================
+                        // ==============================================
 
                         console.log('');
-
                         console.log(
                             'STEP 08.1 - ORGANIZATION FILTER',
                         );
 
-
-                        await applyMoreFilter(
-                            page,
-                        );
-
+                        await applyMoreFilter(page);
 
                         recordPassed(
                             'Apply More Filter - Organization',
                         );
-
 
                         console.log(
                             'Organization filter applied and verified successfully.',
                         );
 
 
-                        // ==================================================
+                        // ==============================================
                         // STEP 08.2 - DISPLAY NAME FILTER
-                        // ==================================================
+                        // ==============================================
 
                         console.log('');
-
-                        console.log(
-                            '======================================================',
-                        );
-
-
                         console.log(
                             'STEP 08.2 - DISPLAY NAME FILTER',
                         );
-
-
-                        console.log(
-                            '======================================================',
-                        );
-
 
                         console.log(
                             `Searching captured Display Name: ${arbitrationClaimDisplayName}`,
                         );
 
-
                         if (
                             !arbitrationClaimDisplayName ||
                             arbitrationClaimDisplayName.trim() === ''
                         ) {
-
                             throw new Error(
                                 'Cannot apply Display Name filter because the claim display name is empty.',
                             );
                         }
-
 
                         await displayNameFilter(
                             page,
                             arbitrationClaimDisplayName,
                         );
 
-
                         recordPassed(
                             'Apply More Filter - Display Name',
                         );
-
 
                         console.log(
                             'Display Name filter applied and verified successfully.',
                         );
 
 
-                        // ==================================================
+                        // ==============================================
                         // STEP 08.3 - CONTRACT ID FILTER
-                        // ==================================================
+                        // ==============================================
 
                         console.log('');
-
-                        console.log(
-                            '======================================================',
-                        );
-
-
                         console.log(
                             'STEP 08.3 - CONTRACT ID FILTER',
                         );
 
-
-                        console.log(
-                            '======================================================',
-                        );
-
-
-                        await contactIdFilter(
-                            page,
-                        );
-
+                        await contactIdFilter(page);
 
                         recordPassed(
                             'Apply More Filter - Contract ID',
                         );
-
 
                         console.log(
                             'Contract ID filter applied and verified successfully.',
                         );
 
 
-                        // ==================================================
+                        // ==============================================
                         // STEP 08.4 - STATUS FILTER
-                        // ==================================================
+                        // ==============================================
 
                         console.log('');
-
-                        console.log(
-                            '======================================================',
-                        );
-
-
                         console.log(
                             'STEP 08.4 - STATUS FILTER',
                         );
 
-
-                        console.log(
-                            '======================================================',
-                        );
-
-
-                        await statusFilter(
-                            page,
-                        );
-
+                        await statusFilter(page);
 
                         recordPassed(
                             'Apply More Filter - Status',
                         );
 
-
                         console.log(
                             'Status filter applied and verified successfully.',
                         );
 
-                    }
-                    catch (
-                        error
-                    ) {
 
-                        // ==================================================
+                        // ==============================================
+                        // STEP 08.5 - CASE OFFICER FILTER
+                        // ==============================================
+
+                        console.log('');
+                        console.log(
+                            'STEP 08.5 - CASE OFFICER FILTER',
+                        );
+
+                        await caseOfficerFilter(page);
+
+                        recordPassed(
+                            'Apply More Filter - Case Officer',
+                        );
+
+                        console.log(
+                            'Case Officer filter applied and verified successfully.',
+                        );
+
+
+                        // ==============================================
+                        // STEP 08.6 - ARBITRATOR FILTER
+                        // ==============================================
+
+                        console.log('');
+                        console.log(
+                            'STEP 08.6 - ARBITRATOR FILTER',
+                        );
+
+                        await arbitratorFilter(page);
+
+                        recordPassed(
+                            'Apply More Filter - Arbitrator',
+                        );
+
+                        console.log(
+                            'Arbitrator filter applied and verified successfully.',
+                        );
+
+
+                        // ==============================================
+                        // STEP 08.7 - LOT ID FILTER
+                        // ==============================================
+
+                        console.log('');
+                        console.log(
+                            'STEP 08.7 - LOT ID FILTER',
+                        );
+
+                        await lotFilter(page);
+
+                        recordPassed(
+                            'Apply More Filter - Lot ID',
+                        );
+
+                        console.log(
+                            'Lot ID filter applied and verified successfully.',
+                        );
+
+
+                        // ==============================================
+                        // STEP 08.8 - DISPUTE TYPE FILTER
+                        // ==============================================
+
+                        console.log('');
+                        console.log(
+                            'STEP 08.8 - DISPUTE TYPE FILTER',
+                        );
+
+                        await disputeTypeFilter(page);
+
+                        recordPassed(
+                            'Apply More Filter - Dispute Type',
+                        );
+
+                        console.log(
+                            'Dispute Type filter applied and verified successfully.',
+                        );
+
+                    } catch (error) {
+
+                        // ==============================================
                         // CHECK ORGANIZATION FILTER
-                        // ==================================================
+                        // ==============================================
 
                         const organizationRecorded =
                             scenarios.some(
@@ -809,9 +724,9 @@ test.describe.serial(
                             );
 
 
-                        // ==================================================
+                        // ==============================================
                         // CHECK DISPLAY NAME FILTER
-                        // ==================================================
+                        // ==============================================
 
                         const displayNameRecorded =
                             scenarios.some(
@@ -821,9 +736,9 @@ test.describe.serial(
                             );
 
 
-                        // ==================================================
+                        // ==============================================
                         // CHECK CONTRACT ID FILTER
-                        // ==================================================
+                        // ==============================================
 
                         const contractIdRecorded =
                             scenarios.some(
@@ -833,9 +748,9 @@ test.describe.serial(
                             );
 
 
-                        // ==================================================
+                        // ==============================================
                         // CHECK STATUS FILTER
-                        // ==================================================
+                        // ==============================================
 
                         const statusRecorded =
                             scenarios.some(
@@ -845,49 +760,112 @@ test.describe.serial(
                             );
 
 
-                        if (
-                            !organizationRecorded
-                        ) {
+                        // ==============================================
+                        // CHECK CASE OFFICER FILTER
+                        // ==============================================
+
+                        const caseOfficerRecorded =
+                            scenarios.some(
+                                scenario =>
+                                    scenario.name ===
+                                    'Apply More Filter - Case Officer',
+                            );
+
+
+                        // ==============================================
+                        // CHECK ARBITRATOR FILTER
+                        // ==============================================
+
+                        const arbitratorRecorded =
+                            scenarios.some(
+                                scenario =>
+                                    scenario.name ===
+                                    'Apply More Filter - Arbitrator',
+                            );
+
+
+                        // ==============================================
+                        // CHECK LOT ID FILTER
+                        // ==============================================
+
+                        const lotIdRecorded =
+                            scenarios.some(
+                                scenario =>
+                                    scenario.name ===
+                                    'Apply More Filter - Lot ID',
+                            );
+
+
+                        // ==============================================
+                        // CHECK DISPUTE TYPE FILTER
+                        // ==============================================
+
+                        const disputeTypeRecorded =
+                            scenarios.some(
+                                scenario =>
+                                    scenario.name ===
+                                    'Apply More Filter - Dispute Type',
+                            );
+
+
+                        if (!organizationRecorded) {
 
                             recordFailed(
                                 'Apply More Filter - Organization',
                                 error,
                             );
 
-                        }
-                        else if (
-                            !displayNameRecorded
-                        ) {
+                        } else if (!displayNameRecorded) {
 
                             recordFailed(
                                 'Apply More Filter - Display Name',
                                 error,
                             );
 
-                        }
-                        else if (
-                            !contractIdRecorded
-                        ) {
+                        } else if (!contractIdRecorded) {
 
                             recordFailed(
                                 'Apply More Filter - Contract ID',
                                 error,
                             );
 
-                        }
-                        else if (
-                            !statusRecorded
-                        ) {
+                        } else if (!statusRecorded) {
 
                             recordFailed(
                                 'Apply More Filter - Status',
                                 error,
                             );
+
+                        } else if (!caseOfficerRecorded) {
+
+                            recordFailed(
+                                'Apply More Filter - Case Officer',
+                                error,
+                            );
+
+                        } else if (!arbitratorRecorded) {
+
+                            recordFailed(
+                                'Apply More Filter - Arbitrator',
+                                error,
+                            );
+
+                        } else if (!lotIdRecorded) {
+
+                            recordFailed(
+                                'Apply More Filter - Lot ID',
+                                error,
+                            );
+
+                        } else if (!disputeTypeRecorded) {
+
+                            recordFailed(
+                                'Apply More Filter - Dispute Type',
+                                error,
+                            );
                         }
 
-
                         flowFailed = true;
-
 
                         throw error;
                     }
@@ -898,65 +876,46 @@ test.describe.serial(
                     // ==================================================
 
                     console.log('');
-
                     console.log(
                         '======================================================',
                     );
-
-
                     console.log(
                         'COMPLETE ARBITRATION E2E FLOW PASSED',
                     );
-
-
                     console.log(
                         '======================================================',
                     );
 
-                }
-                finally {
+                } finally {
 
                     // ==================================================
                     // MARK DEPENDENT SCENARIOS AS SKIPPED
                     // ==================================================
 
-                    if (
-                        flowFailed
-                    ) {
+                    if (flowFailed) {
 
                         console.log('');
-
                         console.log(
                             '======================================================',
                         );
-
-
                         console.log(
                             'FLOW FAILED - MARKING REMAINING SCENARIOS AS SKIPPED',
                         );
-
-
                         console.log(
                             '======================================================',
                         );
 
-
                         for (
-                            const scenarioName
-                            of expectedScenarios
+                            const scenarioName of expectedScenarios
                         ) {
 
                             const alreadyRecorded =
                                 scenarios.some(
                                     scenario =>
-                                        scenario.name ===
-                                        scenarioName,
+                                        scenario.name === scenarioName,
                                 );
 
-
-                            if (
-                                !alreadyRecorded
-                            ) {
+                            if (!alreadyRecorded) {
 
                                 recordSkipped(
                                     scenarioName,
@@ -972,52 +931,29 @@ test.describe.serial(
                     // ==================================================
 
                     console.log('');
-
+                    console.log(
+                        '======================================================',
+                    );
+                    console.log('STEP 09 - LOGOUT');
                     console.log(
                         '======================================================',
                     );
 
-
-                    console.log(
-                        'STEP 09 - LOGOUT',
-                    );
-
-
-                    console.log(
-                        '======================================================',
-                    );
-
-
-                    if (
-                        loginCompleted
-                    ) {
+                    if (loginCompleted) {
 
                         try {
 
-                            await logoutScenario(
-                                page,
-                            );
+                            await logoutScenario(page);
 
-
-                            recordPassed(
-                                'Logout',
-                            );
-
+                            recordPassed('Logout');
 
                             console.log(
                                 'Logout completed successfully.',
                             );
 
-                        }
-                        catch (
-                            error
-                        ) {
+                        } catch (error) {
 
-                            recordFailed(
-                                'Logout',
-                                error,
-                            );
-
+                            recordFailed('Logout', error);
 
                             console.error(
                                 'Logout failed:',
@@ -1025,14 +961,12 @@ test.describe.serial(
                             );
                         }
 
-                    }
-                    else {
+                    } else {
 
                         recordSkipped(
                             'Logout',
                             'Skipped because login was not completed.',
                         );
-
 
                         console.log(
                             'Logout skipped because login was not completed.',
@@ -1045,25 +979,15 @@ test.describe.serial(
                     // ==================================================
 
                     console.log('');
-
+                    console.log(
+                        '======================================================',
+                    );
+                    console.log('PREPARING SANITY E2E REPORT');
                     console.log(
                         '======================================================',
                     );
 
-
-                    console.log(
-                        'PREPARING SANITY E2E REPORT',
-                    );
-
-
-                    console.log(
-                        '======================================================',
-                    );
-
-
-                    const totalScenarios =
-                        scenarios.length;
-
+                    const totalScenarios = scenarios.length;
 
                     const passedScenarios =
                         scenarios.filter(
@@ -1071,13 +995,11 @@ test.describe.serial(
                                 scenario.status === 'PASSED',
                         ).length;
 
-
                     const failedScenarios =
                         scenarios.filter(
                             scenario =>
                                 scenario.status === 'FAILED',
                         ).length;
-
 
                     const skippedScenarios =
                         scenarios.filter(
@@ -1085,21 +1007,17 @@ test.describe.serial(
                                 scenario.status === 'SKIPPED',
                         ).length;
 
-
                     console.log(
                         `Total Scenarios: ${totalScenarios}`,
                     );
-
 
                     console.log(
                         `Passed Scenarios: ${passedScenarios}`,
                     );
 
-
                     console.log(
                         `Failed Scenarios: ${failedScenarios}`,
                     );
-
 
                     console.log(
                         `Skipped Scenarios: ${skippedScenarios}`,
@@ -1111,25 +1029,15 @@ test.describe.serial(
                     // ==================================================
 
                     console.log('');
+                    console.log('SCENARIO RESULTS');
 
-                    console.log(
-                        'SCENARIO RESULTS',
-                    );
-
-
-                    for (
-                        const scenario
-                        of scenarios
-                    ) {
+                    for (const scenario of scenarios) {
 
                         console.log(
                             `${scenario.status} - ${scenario.name}`,
                         );
 
-
-                        if (
-                            scenario.error
-                        ) {
+                        if (scenario.error) {
 
                             console.log(
                                 `  Error: ${scenario.error}`,
@@ -1145,27 +1053,18 @@ test.describe.serial(
                     try {
 
                         await sendReport({
-
                             totalScenarios,
-
                             passedScenarios,
-
                             failedScenarios,
-
                             skippedScenarios,
-
                             scenarios,
                         });
-
 
                         console.log(
                             'Sanity E2E report sent successfully.',
                         );
 
-                    }
-                    catch (
-                        error
-                    ) {
+                    } catch (error) {
 
                         console.error(
                             'Failed to send Sanity E2E report:',
@@ -1179,48 +1078,32 @@ test.describe.serial(
                     // ==================================================
 
                     console.log('');
-
                     console.log(
                         '======================================================',
                     );
-
-
                     console.log(
                         'SANITY E2E EXECUTION COMPLETED',
                     );
-
-
                     console.log(
                         '======================================================',
                     );
 
+                    if (flowFailed) {
 
-                    if (
-                        flowFailed
-                    ) {
+                        console.log('Result: FAILED');
 
-                        console.log(
-                            'Result: FAILED',
-                        );
+                    } else {
 
+                        console.log('Result: PASSED');
                     }
-                    else {
-
-                        console.log(
-                            'Result: PASSED',
-                        );
-                    }
-
 
                     console.log(
                         'Browser session has been logged out.',
                     );
 
-
                     console.log(
                         'Playwright will now close the browser automatically.',
                     );
-
 
                     console.log(
                         '======================================================',

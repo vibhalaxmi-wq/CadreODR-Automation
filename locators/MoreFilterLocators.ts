@@ -3,11 +3,13 @@ import {
     Locator,
 } from '@playwright/test';
 
+
 export class MoreFilterLocators {
 
     constructor(
         private readonly page: Page,
     ) {}
+
 
     // ==========================================================
     // ALL CLAIMS
@@ -22,6 +24,7 @@ export class MoreFilterLocators {
         ).nth(1);
     }
 
+
     // ==========================================================
     // LIST VIEW
     // ==========================================================
@@ -29,6 +32,7 @@ export class MoreFilterLocators {
     get listViewButton(): Locator {
         return this.page.getByRole('img').nth(4);
     }
+
 
     // ==========================================================
     // MORE FILTERS TAB
@@ -44,6 +48,7 @@ export class MoreFilterLocators {
         );
     }
 
+
     // ==========================================================
     // CLOSE / REMOVE PREVIOUS FILTER
     // ==========================================================
@@ -51,6 +56,7 @@ export class MoreFilterLocators {
     get removePreviousFilterButton(): Locator {
         return this.page.getByRole('img').nth(2);
     }
+
 
     // ==========================================================
     // ORGANIZATION FILTER
@@ -81,6 +87,7 @@ export class MoreFilterLocators {
             .first();
     }
 
+
     // ==========================================================
     // DISPLAY NAME FILTER
     // ==========================================================
@@ -94,6 +101,7 @@ export class MoreFilterLocators {
         );
     }
 
+
     // ==========================================================
     // CONTRACT ID FILTER
     // ==========================================================
@@ -106,6 +114,7 @@ export class MoreFilterLocators {
             },
         );
     }
+
 
     // ==========================================================
     // STATUS FILTER
@@ -132,6 +141,117 @@ export class MoreFilterLocators {
         );
     }
 
+
+    // ==========================================================
+    // CASE OFFICER FILTER
+    // ==========================================================
+
+    get caseOfficerValueControl(): Locator {
+        return this.page.locator(
+            'div:nth-child(5) > ._filter-value-input_1fa0f_179 > ._full-width-wrapper_1fa0f_208 > ._outer-container_uvsvt_1 > ._container_uvsvt_10 > ._value_uvsvt_51',
+        );
+    }
+
+    get caseOfficerSearchOptions(): Locator {
+        return this.page.getByRole(
+            'combobox',
+            {
+                name: 'Search options',
+            },
+        );
+    }
+
+    get caseOfficerFilterOption(): Locator {
+        return this.page.locator(
+            '[id$="-option-0"] > div > img',
+        );
+    }
+
+    get caseOfficerFilterResult(): Locator {
+        return this.page.getByText(
+            'Vibha Laxmi',
+        ).nth(1);
+    }
+
+
+    // ==========================================================
+    // ARBITRATOR FILTER
+    // ==========================================================
+
+    get arbitratorValueControl(): Locator {
+        return this.page.locator(
+            'div:nth-child(6) > ._filter-value-input_1fa0f_179 > ._full-width-wrapper_1fa0f_208 > ._outer-container_uvsvt_1 > ._container_uvsvt_10 > ._value_uvsvt_51',
+        );
+    }
+
+    get arbitratorSearchOptions(): Locator {
+        return this.page.getByRole(
+            'combobox',
+            {
+                name: 'Search options',
+            },
+        );
+    }
+
+    get arbitratorFilterOption(): Locator {
+        return this.page.locator(
+            '[id$="-option-0"] > div > img',
+        );
+    }
+
+    get arbitratorFilterResult(): Locator {
+        return this.page.getByText(
+            'Vibha Arbitrator',
+        ).first();
+    }
+
+
+    // ==========================================================
+    // LOT ID FILTER
+    // ==========================================================
+
+    get lotIdValueControl(): Locator {
+        return this.page.locator(
+            'div:nth-child(7) > ._filter-value-input_1fa0f_179 > ._full-width-wrapper_1fa0f_208 > ._outer-container_uvsvt_1 > ._container_uvsvt_10 > ._value_uvsvt_51',
+        );
+    }
+
+    get lotIdSearchOptions(): Locator {
+        return this.page.getByRole(
+            'combobox',
+            {
+                name: 'Search options',
+            },
+        );
+    }
+
+    get lotIdFilterOption(): Locator {
+        return this.page.locator(
+            '[id$="-option-0"] > div > img',
+        );
+    }
+
+
+    // ==========================================================
+    // DISPUTE TYPE FILTER
+    // ==========================================================
+
+    get disputeTypeValueControl(): Locator {
+        return this.page.locator(
+            '._full-width-wrapper_1fa0f_208 > ._outer-container_vjdct_1 > ._container_vjdct_10',
+        );
+    }
+
+    get disputeTypeOption(): Locator {
+        return this.page.getByText(
+            'Conciliation',
+            {
+                exact: true,
+            },
+        ).first();
+    }
+
+
     // ==========================================================
     // APPLY BUTTON
     // ==========================================================
@@ -146,6 +266,7 @@ export class MoreFilterLocators {
         );
     }
 
+
     // ==========================================================
     // ORGANIZATION FILTER VERIFICATION
     // ==========================================================
@@ -158,6 +279,7 @@ export class MoreFilterLocators {
             })
             .nth(3);
     }
+
 
     // ==========================================================
     // DISPLAY NAME CLAIM VERIFICATION
@@ -174,6 +296,7 @@ export class MoreFilterLocators {
         );
     }
 
+
     // ==========================================================
     // CONTRACT ID FILTER VERIFICATION
     // ==========================================================
@@ -184,6 +307,7 @@ export class MoreFilterLocators {
         ).nth(1);
     }
 
+
     // ==========================================================
     // STATUS FILTER VERIFICATION
     // ==========================================================
@@ -192,5 +316,30 @@ export class MoreFilterLocators {
         return this.page.getByText(
             'On Hold',
         ).first();
+    }
+
+
+    // ==========================================================
+    // LOT ID FILTER VERIFICATION
+    // ==========================================================
+
+    get lotIdFilterResult(): Locator {
+        return this.page.getByText(
+            'Claim #AUTO0012',
+            {
+                exact: true,
+            },
+        );
+    }
+
+
+    // ==========================================================
+    // DISPUTE TYPE FILTER VERIFICATION
+    // ==========================================================
+
+    get disputeTypeFilterResult(): Locator {
+        return this.page.getByText(
+            'Conciliation',
+        ).nth(1);
     }
 }
